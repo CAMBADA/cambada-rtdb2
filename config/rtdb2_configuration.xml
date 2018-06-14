@@ -1,0 +1,22 @@
+<!-- This file can be generated using xrtdb in order to 
+     exist backward compatibility between RtDB and RtDB2 -->
+<!-- Every key might have the following parameters:
+     * id that stands for a string identifier;
+     * shared that indicates if the object is shared or local to
+       real-time database;
+     * oid (optional) corresponds to an older identifier in the
+       RtDB older version (this field should disappear after a 
+       complete upgrade.
+     * period (optional) and phase (optional) in order to schedule
+       how an item is shared by the Communication Manager -->
+
+<RtDB2Configuration>
+  <General>
+    <DefaultKeyValue shared="true" period="1" phase="0"/>
+    <Compressor name="zstd" dictionary="true"/>
+  </General>
+  <Keys>
+    <key id="EXAMPLE_ITEM" oid="0"/>
+    <key id="EXAMPLE_ITEM_MAPPED" shared="false" oid="1"/>
+  </Keys>
+</RtDB2Configuration>

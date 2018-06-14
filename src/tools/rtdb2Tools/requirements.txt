@@ -1,0 +1,2 @@
+lmdb==0.92
+msgpack-python==0.4.8
