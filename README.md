@@ -28,6 +28,3 @@ make
 - Tool: dictionary generator (to update the dictionary for compression)
 - Tool: rtdb2top (provides realtime info of all items in RtDB)
 
-## License
-
-RtDB2 is licensed under GNU General Public License v3 (GPL-3)
