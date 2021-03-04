@@ -1,28 +1,23 @@
-FIND_PACKAGE(Boost COMPONENTS system filesystem REQUIRED)
+cmake_minimum_required(VERSION 3.5.1)
 
+project(RtDBcomm)
 
-ADD_LIBRARY( comm STATIC MulticastSocket.cpp )
-SET_TARGET_PROPERTIES( comm PROPERTIES COMPILE_FLAGS "-fPIC" )
+# system dependencies
+find_package(Boost REQUIRED COMPONENTS system filesystem thread QUIET)
 
+# libraries (internal)
+add_library(RtDBcomm SHARED comm.cpp timer.cpp statistics.cpp MulticastSocket.cpp)
+add_library(RtDB::comm ALIAS RtDBcomm)
+target_link_libraries(RtDBcomm rtdb2 RtDButils)
+set_target_properties(RtDBcomm PROPERTIES COMPILE_FLAGS "-fPIC")
 
-SET( comm_SRC
-	multicast.cpp
-	comm.cpp
-	NetworkConfig.cpp
-)
-
-set ( comm_OBJ cambadaComm )
-ADD_EXECUTABLE ( ${comm_OBJ} ${comm_SRC} )
-TARGET_LINK_LIBRARIES( ${comm_OBJ} 
-    rtdb 
-    rtdb2 
-    pthread 
-    comm 
-    z 
-    ${Boost_FILESYSTEM_LIBRARY} 
+# binary
+add_executable(comm main.cpp)
+target_link_libraries(comm
+    RtDBcomm
+    RtDButils
+    ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
 )
-
-SET_TARGET_PROPERTIES( ${comm_OBJ} PROPERTIES OUTPUT_NAME comm )
-
 

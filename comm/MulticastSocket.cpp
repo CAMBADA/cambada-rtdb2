@@ -1,8 +1,10 @@
 #include "MulticastSocket.h"
 
+#include <set>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <ifaddrs.h>
 #include <string.h>
 #include <stdio.h>
 #include <signal.h>
@@ -12,167 +14,216 @@
 #include <unistd.h>
 #include <linux/if_ether.h>
 
-#define PERRNO(txt) \
-	printf("ERROR: (%s / %s): " txt ": %s\n", __FILE__, __FUNCTION__, strerror(errno))
-
-#define PERR(txt, par...) \
-	printf("ERROR: (%s / %s): " txt "\n", __FILE__, __FUNCTION__, ## par)
-
-#ifdef DEBUG
-#define PDEBUG(txt, par...) \
-	printf("DEBUG: (%s / %s): " txt "\n", __FILE__, __FUNCTION__, ## par)
-#else
-#define PDEBUG(txt, par...)
-#endif
-
 
 MulticastSocket::MulticastSocket()
 {
-	multiSocket = -1;
+    _socket = -1;
 }
 
 MulticastSocket::~MulticastSocket()
 {
-	if (multiSocket != -1) closeSocket();
+    if (_socket != -1) closeSocket();
 }
 
-int MulticastSocket::if_NameToIndex(const char *ifname, char *address)
+bool MulticastSocket::resolve()
 {
-	fprintf(stderr, "MulticastSocket::if_NameToIndex(ifname = \"%s\", address = \"%s\")\n", ifname, address);
+    // given interface name _interface (which may be 'auto'), 
+    // determine target interface (e.g. wlo), updating _interface
+    // its index and target IP address
+    // return true if all went well
+    
+    if (_interfaceName == "auto")
+    {
+        if (false == autoSelectInterface())
+        {
+            return false;
+        }
+        fprintf(stderr, "MulticastSocket::resolve(interface = \"auto\" -> \"%s\")\n", _interfaceName.c_str());
+    }
+    else
+    {
+        fprintf(stderr, "MulticastSocket::resolve(interface = \"%s\")\n", _interfaceName.c_str());
+    }
 
-	int	fd;
-	struct ifreq if_info;
-	int if_index;
+    int fd;
+    struct ifreq if_info;
+    int if_index;
 
-	memset(&if_info, 0, sizeof(if_info));
-	strncpy(if_info.ifr_name, ifname, IFNAMSIZ-1);
+    memset(&if_info, 0, sizeof(if_info));
+    strncpy(if_info.ifr_name, _interfaceName.c_str(), IFNAMSIZ-1);
 
-	if ((fd=socket(AF_INET, SOCK_DGRAM, 0)) == -1)
-	{
-		PERRNO("socket");
-		return -1;
-	}
-	if (ioctl(fd, SIOCGIFINDEX, &if_info) == -1)
-	{
-		PERRNO("ioctl 1");
-		close(fd);
-		return -1;
-	}
-	if_index = if_info.ifr_ifindex;
+    if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
+    {
+        fprintf(stderr, "Failed to initialize socket\n");
+        return false;
+    }
+    if (ioctl(fd, SIOCGIFINDEX, &if_info) == -1)
+    {
+        fprintf(stderr, "Failed ioctl part 1\n");
+        return false;
+    }
+    if_index = if_info.ifr_ifindex;
 
-	if (ioctl(fd, SIOCGIFADDR, &if_info) == -1)
-	{
-		PERRNO("ioctl 2");
-		close(fd);
-		return -1;
-	}
-	
-	close(fd);
+    if (ioctl(fd, SIOCGIFADDR, &if_info) == -1)
+    {
+        fprintf(stderr, "Failed ioctl part 2\n");
+        return false;
+    }
+    
+    close(fd);
+    char buffer[32];
+    sprintf(buffer, "%d.%d.%d.%d",
+        (int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[2],
+        (int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[3],
+        (int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[4],
+        (int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[5]);
 
-	sprintf(address, "%d.%d.%d.%d\n",
-		(int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[2],
-		(int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[3],
-		(int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[4],
-		(int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[5]);
+    // store outputs
+    _address = buffer;
+    _interfaceName = if_info.ifr_name;
+    _interfaceIndex = if_index;
 
-	printf("**** Using device %s -> IP %s\n", if_info.ifr_name, address);
-
-	return if_index;
+    return true;
 }
 
-int MulticastSocket::openSocket(const char* interface, const char* group, short port)
+int MulticastSocket::openSocket(std::string const &interface, std::string const &group, int port, bool loopback)
 {
-	fprintf(stderr, "MulticastSocket::openSocket(interface = \"%s\", group = \"%s\", port = %hd)\n", interface, group, port);
+    // if this is a reopen, close previous opening
+    if (_socket != -1) closeSocket();
 
-	/* if this is a reopen, close previous opening */
-	if (multiSocket != -1) closeSocket();
-
-	/* register multicast group and port */
-	multicast_port = port;
-	multicast_group = group;
-	
-	/* do the opening */
+    // store arguments
+    _interfaceName = interface;
+    _group = group;
+    _port = port;
+    _loopback = loopback;
+    
+    // open the socket
     struct sockaddr_in multicastAddress;
     struct ip_mreqn mreqn;
     struct ip_mreq mreq;
-	int opt;
-	char address[20];
+    int opt;
 
     bzero(&multicastAddress, sizeof(struct sockaddr_in));
     multicastAddress.sin_family = AF_INET;
-    multicastAddress.sin_port = htons(multicast_port);
+    multicastAddress.sin_port = htons(_port);
     multicastAddress.sin_addr.s_addr = INADDR_ANY;
 
-	bzero(&destAddress, sizeof(struct sockaddr_in));
-	destAddress.sin_family = AF_INET;
-	destAddress.sin_port = htons(multicast_port);
-	destAddress.sin_addr.s_addr = inet_addr(multicast_group);
+    bzero(&_destAddress, sizeof(struct sockaddr_in));
+    _destAddress.sin_family = AF_INET;
+    _destAddress.sin_port = htons(_port);
+    _destAddress.sin_addr.s_addr = inet_addr(_group.c_str());
 
-	if((multiSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
-	{
-		PERRNO("socket");
-		return -1;
-	}
-
-	memset((void *) &mreqn, 0, sizeof(mreqn));
-	mreqn.imr_ifindex=if_NameToIndex(interface, address);
-	if((setsockopt(multiSocket, SOL_IP, IP_MULTICAST_IF, &mreqn, sizeof(mreqn))) == -1)
-	{
-	    PERRNO("setsockopt 1");
-		return -1;
-	}
-
-	opt = 1;
-	if((setsockopt(multiSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) == -1)
+    if ((_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
     {
-        PERRNO("setsockopt 2");
-		return -1;
+        fprintf(stderr, "socket() call failed\n");
+        return -1;
+    }
+
+    // resolve interface name and index
+    resolve();
+    memset((void *) &mreqn, 0, sizeof(mreqn));
+    mreqn.imr_ifindex = _interfaceIndex;
+    if ((setsockopt(_socket, SOL_IP, IP_MULTICAST_IF, &mreqn, sizeof(mreqn))) == -1)
+    {
+        fprintf(stderr, "setsockopt() call 1 failed\n");
+        return -1;
+    }
+
+    opt = 1;
+    if ((setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) == -1)
+    {
+        fprintf(stderr, "setsockopt() call 2 failed\n");
+        return -1;
     }
  
-	memset((void *) &mreq, 0, sizeof(mreq));
-	mreq.imr_multiaddr.s_addr = inet_addr(multicast_group);
-	mreq.imr_interface.s_addr = inet_addr(address);
+    memset((void *) &mreq, 0, sizeof(mreq));
+    mreq.imr_multiaddr.s_addr = inet_addr(_group.c_str());
+    mreq.imr_interface.s_addr = inet_addr(_address.c_str());
 
-	if((setsockopt(multiSocket, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq))) == -1)
-	{
-	    PERRNO("setsockopt 3");
-		return -1;
-	}
-						
-	/* Enable/Disable reception of our own multicast */
-	opt = RECEIVE_OUR_DATA;
-	if((setsockopt(multiSocket, IPPROTO_IP, IP_MULTICAST_LOOP, &opt, sizeof(opt))) == -1)
-	{
-		PERRNO("setsockopt 4");
-		return -1;
-	}
+    if ((setsockopt(_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq))) == -1)
+    {
+        fprintf(stderr, "setsockopt() call 3 failed\n");
+        return -1;
+    }
+                        
+    // Enable/Disable reception of our own multicast
+    opt = _loopback;
+    if ((setsockopt(_socket, IPPROTO_IP, IP_MULTICAST_LOOP, &opt, sizeof(opt))) == -1)
+    {
+        fprintf(stderr, "setsockopt() call 4 failed\n");
+        return -1;
+    }
 
-	if(bind(multiSocket, (struct sockaddr *) &multicastAddress, sizeof(struct sockaddr_in)) == -1)
-	{
-		PERRNO("bind");
-		return -1;
-	}
+    if (bind(_socket, (struct sockaddr *) &multicastAddress, sizeof(struct sockaddr_in)) == -1)
+    {
+        fprintf(stderr, "bind() call failed\n");
+        return -1;
+    }
 
-	return 0;
+    return 0;
 }
 
 int MulticastSocket::closeSocket()
 {
-	if (multiSocket == -1) return 0;
+    if (_socket == -1) return 0;
 
-	int ret = shutdown(multiSocket, SHUT_RDWR);
+    int ret = shutdown(_socket, SHUT_RDWR);
 
-	multiSocket = -1;
-	return ret;
+    _socket = -1;
+    return ret;
 }
 
-int MulticastSocket::sendData(void* data, int dataSize)
+int MulticastSocket::sendData(void* data, int size)
 {
-	return sendto(multiSocket, data, dataSize, 0, (struct sockaddr *)&destAddress, sizeof (struct sockaddr));
+    return sendto(_socket, data, size, 0, (struct sockaddr *)&_destAddress, sizeof (struct sockaddr));
 }
 
-int MulticastSocket::receiveData(void* buffer, int bufferSize)
+int MulticastSocket::receiveData(void* data, int size)
 {
-	return recv(multiSocket, buffer, bufferSize, 0);
+    return recv(_socket, data, size, 0);
+}
+
+bool MulticastSocket::autoSelectInterface()
+{
+    struct ifaddrs *ifAddrStruct = NULL;
+    struct ifaddrs *ifa = NULL;
+    getifaddrs(&ifAddrStruct);
+
+    // ignore list
+    std::set<std::string> ignore;
+    ignore.insert("lo");
+    ignore.insert("enp0s31f6"); // Falcons robots: the port on top-side of CPU-box, located most inward, is reserved for multiCam
+    
+    // priority list: assume ad-hoc cable connection takes precedence over wifi
+    std::set<std::string> prioritize;
+    prioritize.insert("enp3s0"); // Falcons robots
+    prioritize.insert("eth0"); // Falcons devlaptlops
+    
+    // TODO: make these lists configurable via XML?
+    
+    // first select from priority list, then select whichever remains
+    for (int priorityLoop = 0; priorityLoop <= 1; ++priorityLoop)
+    {
+        for (ifa = ifAddrStruct; (ifa != NULL); ifa = ifa->ifa_next)
+        {
+            // filter IPV4 addresses and apply ignore list
+            if ((ifa->ifa_addr->sa_family == AF_INET) && (!ignore.count(ifa->ifa_name)))
+            {
+                if (priorityLoop && prioritize.count(ifa->ifa_name))
+                {
+                    // select first one in prio list
+                    _interfaceName = ifa->ifa_name;
+                    return true;
+                }
+                if (!priorityLoop)
+                {
+                    // select first one after prio options are exhausted
+                    _interfaceName = ifa->ifa_name;
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 

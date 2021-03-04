@@ -43,7 +43,18 @@ private:
 };
 
 RtDB2Configuration::RtDB2Configuration() {
-    int error = parse_configuration();
+    std::string configuration_path = "";;
+    char *cp = NULL;
+    if ((cp = getenv("RTDB_CONFIG_PATH")) != NULL)
+    {
+        configuration_path = cp;
+    }
+    else
+    {
+        throw std::runtime_error("Error while creating a configuration for the RTDB - No directory configured!");
+    }
+    std::string configuration_file = configuration_path + "/rtdb2_configuration.xml";
+    int error = parse_configuration(configuration_file);
     if (error != RTDB2_SUCCESS)
         throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse!");
 }
@@ -64,6 +75,7 @@ int RtDB2Configuration::parse_configuration(std::string file_path) {
     XMLCh* name_shared = xercesc::XMLString::transcode("shared");
     XMLCh* name_period = xercesc::XMLString::transcode("period");
     XMLCh* name_phase = xercesc::XMLString::transcode("phase");
+    XMLCh* name_timeout = xercesc::XMLString::transcode("timeout");
     XMLCh* name_id = xercesc::XMLString::transcode("id");
 
     boost::shared_ptr<xercesc::XercesDOMParser> config_parser = boost::make_shared<xercesc::XercesDOMParser>();
@@ -148,6 +160,20 @@ int RtDB2Configuration::parse_configuration(std::string file_path) {
                     continue;
                 }
                 default_details_.phase_shift = atoi(phase.c_str());
+
+                xercesc::DOMAttr* attr_timeout = element->getAttributeNode(name_timeout);
+                if (attr_timeout == NULL) {
+                    err_handler->create_error(CustomErrorHandler::WARNING,
+                                              "Missing attribute timeout on tag DefaultKeyValue");
+                    continue;
+                }
+                std::string timeout = xercesc::XMLString::transcode(attr_timeout->getValue());
+                if (!is_number(timeout)) {
+                    err_handler->create_error(CustomErrorHandler::WARNING,
+                                              "Attribute timeout on tag DefaultKeyValue is not a number");
+                    continue;
+                }
+                default_details_.timeout = atof(timeout.c_str());
             } // If it is Compressor, process it
             else if (tag_name == "Compressor") {
                 XMLCh* name_name = xercesc::XMLString::transcode("name");
@@ -174,6 +200,106 @@ int RtDB2Configuration::parse_configuration(std::string file_path) {
                 } else {
                     err_handler->create_error(CustomErrorHandler::WARNING,
                                               "Shared attribute value in tag \"DefaultKeyValue\" is invalid.");
+                }
+            } else if (tag_name == "Communication") {
+                xercesc::DOMAttr *attr = NULL;
+                std::string s;
+                
+                attr = element->getAttributeNode(xercesc::XMLString::transcode("multiCastIP"));
+                if (attr == NULL) {
+                    err_handler->create_error(CustomErrorHandler::WARNING,
+                                              "Missing attribute 'multiCastIP' on tag Communication");
+                    continue;
+                } else {
+                    communication_settings_.multiCastIP = xercesc::XMLString::transcode(attr->getValue());
+                }
+
+                communication_settings_.interface = "auto"; // optional overrule in xml
+                attr = element->getAttributeNode(xercesc::XMLString::transcode("interface"));
+                if (attr != NULL) {
+                    communication_settings_.interface = xercesc::XMLString::transcode(attr->getValue());
+                }
+
+                attr = element->getAttributeNode(xercesc::XMLString::transcode("frequency"));
+                if (attr == NULL) {
+                    err_handler->create_error(CustomErrorHandler::WARNING,
+                                              "Missing attribute 'frequency' on tag Communication");
+                    continue;
+                } else {
+                    s = xercesc::XMLString::transcode(attr->getValue());
+                    try
+                    {
+                        communication_settings_.frequency = atof(s.c_str());
+                    }
+                    catch (...)
+                    {
+                        err_handler->create_error(CustomErrorHandler::WARNING,
+                                                  "Attribute 'frequency' on tag Communication is not a number");
+                        continue;
+                    }
+                }
+
+                attr = element->getAttributeNode(xercesc::XMLString::transcode("port"));
+                if (attr == NULL) {
+                    err_handler->create_error(CustomErrorHandler::WARNING,
+                                              "Missing attribute 'port' on tag Communication");
+                    continue;
+                } else {
+                    s = xercesc::XMLString::transcode(attr->getValue());
+                    if (!is_number(s)) {
+                        err_handler->create_error(CustomErrorHandler::WARNING,
+                                                  "Attribute 'port' on tag Communication is not a number");
+                        continue;
+                    }
+                    communication_settings_.port = atoi(s.c_str());
+                }
+
+                attr = element->getAttributeNode(xercesc::XMLString::transcode("compression"));
+                if (attr == NULL) {
+                    err_handler->create_error(CustomErrorHandler::WARNING,
+                                              "Missing attribute 'compression' on tag Communication");
+                    continue;
+                } else {
+                    s = xercesc::XMLString::transcode(attr->getValue());
+                    if (s == "true" || s == "1") {
+                        communication_settings_.compression = true;
+                    } else if (s == "false" || s == "0") {
+                        communication_settings_.compression = false;
+                    } else {
+                        err_handler->create_error(CustomErrorHandler::WARNING,
+                                                  "Attribute 'compression' value is invalid");
+                        continue;
+                    }
+                }
+
+                communication_settings_.loopback = false;
+                attr = element->getAttributeNode(xercesc::XMLString::transcode("loopback"));
+                if (attr != NULL) {
+                    s = xercesc::XMLString::transcode(attr->getValue());
+                    if (s == "true" || s == "1" || s == "enabled") {
+                        communication_settings_.loopback = true;
+                    } else if (s == "false" || s == "0" || s == "disabled") {
+                        communication_settings_.loopback = false;
+                    } else {
+                        err_handler->create_error(CustomErrorHandler::WARNING,
+                                                  "Attribute 'loopback' value is invalid");
+                        continue;
+                    }
+                }
+
+                communication_settings_.send = true;
+                attr = element->getAttributeNode(xercesc::XMLString::transcode("send"));
+                if (attr != NULL) {
+                    s = xercesc::XMLString::transcode(attr->getValue());
+                    if (s == "true" || s == "1" || s == "enabled") {
+                        communication_settings_.send = true;
+                    } else if (s == "false" || s == "0" || s == "disabled") {
+                        communication_settings_.send = false;
+                    } else {
+                        err_handler->create_error(CustomErrorHandler::WARNING,
+                                                  "Attribute 'send' value is invalid");
+                        continue;
+                    }
                 }
             } else {
                 std::stringstream ss;
@@ -212,6 +338,7 @@ int RtDB2Configuration::parse_configuration(std::string file_path) {
             xercesc::DOMAttr* attr_shared = element->getAttributeNode(name_shared);
             xercesc::DOMAttr* attr_period = element->getAttributeNode(name_period);
             xercesc::DOMAttr* attr_phase = element->getAttributeNode(name_phase);
+            xercesc::DOMAttr* attr_timeout = element->getAttributeNode(name_timeout);
             xercesc::DOMAttr* attr_oid = element->getAttributeNode(name_oid);
 
             // Check if the attribute nome and shared exist
@@ -248,6 +375,11 @@ int RtDB2Configuration::parse_configuration(std::string file_path) {
             if (attr_phase != NULL) {
                 std::string phase = xercesc::XMLString::transcode(attr_phase->getValue());
                 detail.phase_shift = atoi(phase.c_str());
+            }
+
+            if (attr_timeout != NULL) {
+                std::string timeout = xercesc::XMLString::transcode(attr_timeout->getValue());
+                detail.timeout = atof(timeout.c_str());
             }
             insert_key_detail(id, detail);
         }
@@ -319,6 +451,10 @@ const CompressorSettings &RtDB2Configuration::get_compressor_settings() const {
     return compressor_settings_;
 }
 
+const CommunicationSettings &RtDB2Configuration::get_communication_settings() const {
+    return communication_settings_;
+}
+
 std::string to_upper(const std::string& s) {
     std::string upper_string;
     std::string::const_iterator it = s.begin();
@@ -341,6 +477,6 @@ std::string to_lower(const std::string& s) {
 
 bool is_number(const std::string& s) {
     std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
+    while (it != s.end() && (std::isdigit(*it) || *it=='.' || *it=='-')) ++it;
     return !s.empty() && it == s.end();
 }

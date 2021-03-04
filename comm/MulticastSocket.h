@@ -1,38 +1,38 @@
-#ifndef _CAMBADA_MULTICAST_COMM_
-#define _CAMBADA_MULTICAST_COMM_
+#ifndef _INCLUDED_RTDB2_COMM2_MULTICASTSOCKET_HPP_
+#define _INCLUDED_RTDB2_COMM2_MULTICASTSOCKET_HPP_
 
-#define DFL_MULTICAST_PORT 2000
-#define DFL_MULTICAST_GROUP "224.16.32.39"
-
-#define RECEIVE_OUR_DATA 1
+// JFEI Dec. 2018: based on MulticastSocket from comm v1, by Cambada
 
 #include <arpa/inet.h>
+#include <string>
 
 class MulticastSocket
 {
-public:
-	MulticastSocket();
-	~MulticastSocket();
+  public:
+    MulticastSocket();
+    ~MulticastSocket();
 
-	int openSocket(const char* interface, const char* group = DFL_MULTICAST_GROUP, short port = DFL_MULTICAST_PORT);
-	int closeSocket();
-	int sendData(void* data, int dataSize);
-	int receiveData(void* buffer, int bufferSize);
+    int openSocket(std::string const &interface, std::string const &group, int port, bool loopback = false);
+    int closeSocket();
+    int sendData(void* data, int size);
+    int receiveData(void* data, int size);
 
-	inline int getSocket() 
-	{
-		return multiSocket;
-	}
+    int getSocket() const { return _socket; }
+    std::string getInterface() const { return _interfaceName; }
+    std::string getIpAddress() const { return _address; }
 
-private:
-	const char* multicast_group;
-	short multicast_port;
+  private:
+    int         _port;
+    int         _socket;
+    int         _interfaceIndex;
+    bool        _loopback;
+    std::string _interfaceName;
+    std::string _address;
+    std::string _group;
 
-	int multiSocket;
-
-	struct sockaddr_in destAddress;
-	
-	int if_NameToIndex(const char *ifname, char *address);
+    struct sockaddr_in _destAddress;
+    bool resolve();
+    bool autoSelectInterface();
 };
 
 #endif
