@@ -7,10 +7,11 @@ RtDB2* RtDB2Store::getRtDB2(int db_identifier)
 RtDB2* RtDB2Store::getRtDB2(int db_identifier, char team_char)
 {
     std::string path = "";
-    if (team_char == 'B')
-    {
-        path = RTDB2_SIM_TEAM_B_PATH;
-    }
+    // TODO: this should be reworked in a more general way, the SIM path switching was basically a Falcons hack
+    //if (team_char == 'B')
+    //{
+    //    path = RTDB2_SIM_TEAM_B_PATH;
+    //}
     return getRtDBInstance( std::make_pair(db_identifier, path) );
 }
 RtDB2* RtDB2Store::getRtDB2(int db_identifier, std::string path)
