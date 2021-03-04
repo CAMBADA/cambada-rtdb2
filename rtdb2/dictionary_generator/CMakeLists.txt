@@ -1,5 +1,5 @@
 ### Compiling
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS program_options REQUIRED QUIET)
 
 add_executable(rtdb2_dictionary_gen generator.cpp)
 target_link_libraries(rtdb2_dictionary_gen

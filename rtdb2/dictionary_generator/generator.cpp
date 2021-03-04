@@ -7,7 +7,7 @@
 #include <sstream>
 
 // Structures directories
-#include "../../rtdb/example_rtdb2_item.h"
+#include "../example_rtdb2_item.h"
 
 #define RTDB2_GENERATOR_PATH    "/tmp/rtdb2_gen_storage"
 #define RTDB2_BATCHS_PATH       "/tmp/rtdb2_gen_batchs"
@@ -33,10 +33,8 @@ int main(int argc , char** argv) {
     options_description menu(menu_message.str());
     menu.add_options()
             ("help", "produce this message")
-            ("path", value<std::string>(&path)->default_value(RTDB2_GENERATOR_PATH),
-                    "specify a existing rtdb2 path")
-            ("output", value<std::string>(&dictionary_path)->default_value("../config/zstd_dictionary.dic"),
-             "specify a existing zstd dictionary path")
+            ("path", value<std::string>(&path)->default_value(RTDB2_GENERATOR_PATH), "specify a existing rtdb2 path")
+            ("output", value<std::string>(&dictionary_path)->default_value("../config/zstd_dictionary.dic"), "specify a existing zstd dictionary path")
             ("train_size", value<int>(&iterations), "(required) specify the size (>0) of the dataset to train zstd");
     variables_map vm;
     store(parse_command_line(argc, argv, menu), vm);
@@ -66,6 +64,10 @@ int main(int argc , char** argv) {
     boost::filesystem::remove_all(RTDB2_BATCHS_PATH);
     boost::filesystem::create_directories(RTDB2_BATCHS_PATH);
 
+    RtDB2BatchSettings batchSettings;
+    batchSettings.compress = false;
+    batchSettings.shared = true;
+
     int err;
     float progress = 0.0;
     int barWidth = 70;
@@ -93,7 +95,7 @@ int main(int argc , char** argv) {
         }
 
         std::string batch_data;
-        if (rtdb2->get_batch(batch_data, true, false) != RTDB2_SUCCESS) {
+        if (rtdb2->get_batch(batch_data, batchSettings, 0) != RTDB2_SUCCESS) {
             std::cout << "Failed to get batch of data from RtDB2" << std::endl;
             return 3;
         }

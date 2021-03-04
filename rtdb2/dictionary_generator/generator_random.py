@@ -57,7 +57,7 @@ class GeneratorRandom():
     @classmethod
     def randomize_value(cls, raw_data):
         # Unpack the data except the lifetime
-        unpacked = msgpack.unpackb(raw_data[:-16])
+        unpacked = msgpack.unpackb(raw_data[:-16], raw=False)
         # Randomize it
         randomized = GeneratorRandom.randomize_value_raw(unpacked)
         # Repack again and re-concatenate the lifetime
