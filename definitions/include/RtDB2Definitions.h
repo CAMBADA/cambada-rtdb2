@@ -6,13 +6,15 @@
 // Activate this flag to make every print visible, even debug ones.
 //#define RTDB2_ACTIVE_DEBUG
 
+// TODO cleanup this header, much of it seems private - the important part for clients are the SERIALIZE macro/aliases, so maybe rename this header to "serialize.hpp"?
+
 #define SERIALIZE_DATA(...)         MSGPACK_DEFINE_MAP(__VA_ARGS__)
 #define SERIALIZE_DATA_FIXED(...)   MSGPACK_DEFINE(__VA_ARGS__)
 #define SERIALIZE_ENUM(enum_name)   MSGPACK_ADD_ENUM(enum_name)
-#define DEFAULT_PATH                "/tmp/rtdb2_storage"
+#define RTDB2_DEFAULT_PATH          "/tmp/rtdb2_storage"
 #define DB_PREPEND_NAME             "agent"
-#define RTDB2_CONFIGURATION_FILE    "../config/rtdb2_configuration.xml"
-#define ZSTD2_DICTIONARY_FILE       "../config/zstd_dictionary.dic"
+#define RTDB2_CONFIGURATION_FILE    "config/rtdb2_configuration.xml"
+#define ZSTD2_DICTIONARY_FILE       "config/zstd_dictionary.dic"
 
 // Default defines that are possible to call
 // _FC means that it is possible to define the file and function caller
