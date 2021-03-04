@@ -1,16 +1,16 @@
-### Looking for necessary system dependencies
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+cmake_minimum_required(VERSION 3.5.1)
 
-### Private Dependencies
-IF(COMMAND cmake_policy)
-    cmake_policy(SET CMP0022 NEW)
-    IF(POLICY CMP0038)
-        cmake_policy(SET CMP0038 OLD)
-    ENDIF()
-    IF(POLICY CMP0046)
-        cmake_policy(SET CMP0046 OLD)
-    ENDIF()
-ENDIF(COMMAND cmake_policy)
+project(rtdb2)
+# TODO below listing could use some cleanup / modernizing
+
+
+### Looking for necessary system dependencies
+find_package(Boost COMPONENTS system thread filesystem REQUIRED QUIET)
+
+
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug)
+
 
 include(ExternalProject)
 
@@ -21,13 +21,13 @@ IF (MSGPACK_FOUND)
 ENDIF()
 
 ### LMDB Compilation
-find_package(LMDB 0.9.19 REQUIRED)
+find_package(LMDB 0.9.17 REQUIRED)
 if(LMDB_FOUND)
     include_directories(SYSTEM ${LMDB_INCLUDE_DIR})
 endif()
 
 ### LZ4 Compilation
-find_package(LZ4 1.7.5 REQUIRED)
+find_package(LZ4 1.7.1 REQUIRED)
 if(LZ4_FOUND)
     include_directories(SYSTEM ${LZ4_INCLUDE_DIR})
 endif()
@@ -43,9 +43,10 @@ set(RTDB2_TARGET_DEPENDENCIES lmdb msgpack lz4 zstd)
 # Library target sources (cpp/h)
 set(RTDB2_LIBRARY_SOURCES
         RtDB2.cpp RtDB2.h
+        RtDB2Item.h
+        RtDB2Store.cpp RtDB2Store.h
         serializer/RtDB2Serializer.h compressor/RtDB2Compressor.h storage/RtDB2Storage.h
         RtDB2Configuration.cpp RtDB2Configuration.h
-        RtDB2Definitions.h
         RtDB2ErrorCode.h RtDB2ErrorCode.cpp
         storage/RtDB2StorageLMDB.cpp storage/RtDB2StorageLMDB.h
         compressor/RtDB2CompressorLZ4.cpp compressor/RtDB2CompressorLZ4.h
@@ -55,21 +56,21 @@ set(RTDB2_LIBRARY_DEPENDENCIES
         ${LMDB_LIBRARIES}
         ${MSGPACK_LIBRARIES}
         ${LZ4_LIBRARIES} ${ZSTD_LIBRARIES}
-        ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY}
-        xerces-c -pthread)
+        ${Boost_LIBRARIES}
+        xerces-c pthread)
 ### Adding RTDB2 as Library
-add_library(rtdb2 STATIC ${RTDB2_LIBRARY_SOURCES})
+add_library(rtdb2 ${RTDB2_LIBRARY_SOURCES})
+target_link_libraries(rtdb2 RtDB::definitions RtDB::utils)
 target_link_libraries(rtdb2 ${RTDB2_LIBRARY_DEPENDENCIES})
 # If the interface has a public include of the dependency (e.g. LMDB), it must be packed with the RtDB2 library
 target_include_directories(rtdb2
         PUBLIC ${MSGPACK_INCLUDE_DIRS}
         PUBLIC ${LMDB_INCLUDE_DIR})
 
-add_dependencies(rtdb2 ${RTDB2_TARGET_DEPENDENCIES})
 set_target_properties(rtdb2 PROPERTIES COMPILE_FLAGS "-fPIC")
 
 ### Some programs used to debug RtDB2
 
 ### Call the CMake inside dictionary_generator
-add_subdirectory(dictionary_generator)
+#TODO add_subdirectory(dictionary_generator)
 

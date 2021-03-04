@@ -21,6 +21,11 @@ std::string RtDB2_error_tostring(const int& error) {
         case RTDB2_FAILED_DECOMPRESSING: return "Error while decompressing data! Dictionary might mismatch.";
         case RTDB2_FAILED_COMPRESSING: return "Error while compressing data! Dictionary might mismatch.";
         case RTDB2_FAILED_DESERIALIZE: return "Failed to deserialize data! Structure has several changes.";
+        case RTDB2_FAILED_SEMAPHORE_CREATION: return "Failed to create semaphore on wait for PUT.";
+        case RTDB2_FAILED_SEMAPHORE_WAIT: return "Failed waiting for semaphore";
+        case RTDB2_INTERNAL_MDB_ERROR: return "Internal MDB error";
+        case RTDB2_ITEM_STALE: return "Item stale";
+        case RTDB2_FAILED_SEMAPHORE_RELEASE: return "Failed to release semaphore on PUT";
         default: return "Unknown error";
     }
 }
