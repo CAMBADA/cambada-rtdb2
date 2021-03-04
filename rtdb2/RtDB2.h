@@ -16,6 +16,7 @@
 #include "RtDB2ErrorCode.h"
 #include "RtDB2Configuration.h"
 #include "RtDB2Frame.h"
+#include "RtDB2SyncPoint.h"
 
 #include "serializer/RtDB2Serializer.h"
 #include "compressor/RtDB2Compressor.h"
