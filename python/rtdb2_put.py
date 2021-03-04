@@ -1,42 +1,30 @@
 #!/usr/bin/python
 import os
 import sys
+import argparse
+from rtdb2 import RtDB2Store, RTDB2_DEFAULT_PATH
+import rtdb2tools
+
 
 # Main structure of the program
 if __name__ == "__main__":
-    from rtdb2_curses import RtDBCurses
-    from rtdb2 import RtDB2
 
-    if len(sys.argv) != 5 and len(sys.argv) != 4:
-        print "Expected the storage path."
-        print "Usage: " + sys.argv[0] + " <agent> <key> <value> [storage_path]"
-        sys.exit(0)
+    # Argument parsing.
+    descriptionTxt = 'This tool can write a value in the database given an RtDB key.\n'
+    exampleTxt = 'Example: rtdb2_put.py -a 0 REFBOX_CONFIG "[0,3]"\n'
+    parser     = argparse.ArgumentParser(description=descriptionTxt, epilog=exampleTxt,  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-a', '--agent', help='agent ID to use', type=int, default=rtdb2tools.guessAgentId())
+    parser.add_argument('-p', '--path', help='database path to use', type=str, default=RTDB2_DEFAULT_PATH)
+    parser.add_argument('key', help='RtDB key to write to')
+    parser.add_argument('value', help='the value to put as string, should be mappable to target struct')
+    args = parser.parse_args()
 
-    agent_num = sys.argv[1]
-    key = sys.argv[2]
-    value = sys.argv[3]
-    if len(sys.argv) != 5:
-        DEFAULT_PATH = "/tmp/rtdb2_storage"
-        agents = os.listdir(DEFAULT_PATH)
-        if len(agents) <= 0:
-            print "No agents where found in %s" % (DEFAULT_PATH, )
-            sys.exit(0)
+    # Create instance of RtDB2Store and read databases from disk
+    rtdb2Store = RtDB2Store(args.path, False) # don't start in read-only
 
-        if len(agents) == 1:
-            storage_path = os.path.join(DEFAULT_PATH, agents[0])
-        else:
-            while True:
-                print "Found agents: %s" % (agents, )
-                sys.stdout.write('Write agent number: ')
+    # This put operation should try to preserve attributes, like shared
+    value = eval(args.value) # yikes! but, this prevents argument like '[1, 4]' being written into database as string, whereas we need an array of size 2
+    item = rtdb2Store.put(args.agent, args.key, value)
 
-                agent = raw_input()
-                agent = "agent" + agent
-                if agent in agents:
-                    storage_path = os.path.join(DEFAULT_PATH, agent)
-                    break
-    else:
-        storage_path = sys.argv[4]
+    rtdb2Store.closeAll()
 
-    rtdb = RtDB2(storage_path, False)
-    rtdb.put(agent_num, key, value)
-    rtdb.close()

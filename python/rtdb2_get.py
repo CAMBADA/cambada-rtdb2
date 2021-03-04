@@ -1,78 +1,44 @@
 #!/usr/bin/python
 import os
 import sys
+import argparse
+from rtdb2 import RtDB2Store, RTDB2_DEFAULT_PATH
+import rtdb2tools
+from hexdump import hexdump
+
 
 # Main structure of the program
 if __name__ == "__main__":
-    from rtdb2_curses import RtDBCurses
-    from rtdb2 import RtDB2
 
-    if len(sys.argv) < 3:
-        print "Expected the storage path."
-        print "Usage: " + sys.argv[0] + " <agent_id> <key>\nOptional:\n"+\
-        "\t--path=storage_path\n\t--watch\n\t--raw_value"
-        sys.exit(0)
+    # Argument parsing.
+    descriptionTxt = 'This tool reads a value from the database given an RtDB key.\n'
+    exampleTxt = """Example: rtdb2_get.py -a 6 ROBOT_STATE
+   age: 2h
+shared: True
+  list: False
+ value: [2, [1581172987, 618438], [0.05368572473526001, -0.2938263416290283, 5.330356597900391], [0.1385340541601181, -0.8020891547203064, 0.7817431688308716], False, [0.0, 0.0], 6, 'A']
 
-    agent_id = sys.argv[1]
-    key = sys.argv[2]
+Example: rtdb2_get.py -a 2 DIAG_WORLDMODEL_LOCAL -x "['balls'][0]['result']"
+[[5.3209381103515625, 0.5837346315383911, 0.15281200408935547], [-0.0029433025047183037, 0.01433953270316124, 1.2758345292240847e-05], 1.0, [22033, 1889585904]]
+"""
+    parser     = argparse.ArgumentParser(description=descriptionTxt, epilog=exampleTxt,  formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-a', '--agent', help='agent ID to use', type=int, default=rtdb2tools.guessAgentId())
+    parser.add_argument('-s', '--serialized', help='also show serialized string (as hexdump)', action='store_true')
+    parser.add_argument('-p', '--path', help='database path to use', type=str, default=RTDB2_DEFAULT_PATH)
+    parser.add_argument('-x', '--expression', help='evaluate expression, useful to fetch a specific element', type=str)
+    parser.add_argument('key', help='RtDB key to read')
+    args = parser.parse_args()
 
-    found_path = False
-    watch = False
-    raw_value = False
-    try:
-        for i in range(3, len(sys.argv)):
-            if "--path" in sys.argv[i]:
-                storage_path = sys.argv[i][7:]
-                found_path = True
-            elif "--watch" in sys.argv[i]:
-                watch = True
-            elif "--raw_value" in sys.argv[i]:
-                raw_value = True
-    except:
-        print "Expected the storage path."
-        print "Usage: " + sys.argv[0] + " <agent_id> <key>\nOptional:\n"+\
-        "\t--path=storage_path\n\t--watch\n\t--raw_value"
-        sys.exit(0)
+    # Create instance of RtDB2Store and read databases from disk
+    rtdb2Store = RtDB2Store(args.path)
 
-    if not found_path:
-        DEFAULT_PATH = "/tmp/rtdb2_storage"
-        agents = os.listdir(DEFAULT_PATH)
-        if len(agents) <= 0:
-            print "No agents where found in %s" % (DEFAULT_PATH, )
-            sys.exit(0)
+    item = rtdb2Store.get(args.agent, args.key, timeout=None)
+    if args.expression:
+        print(eval("item.value" + args.expression))
+    else:
+        print(str(item))
+    if args.serialized:
+        hexdump(item.value_serialized)
 
-        if len(agents) == 1:
-            storage_path = os.path.join(DEFAULT_PATH, agents[0])
-        else:
-            while True:
-                print "Found agents: %s" % (agents, )
-                sys.stdout.write('Write agent number: ')
+    rtdb2Store.closeAll()
 
-                agent = raw_input()
-                agent = "agent" + agent
-                if agent in agents:
-                    storage_path = os.path.join(DEFAULT_PATH, agent)
-                    break
-    
-    if raw_value:
-        data = RtDB2(storage_path)
-        (value, life) = data.get(agent_id, key)
-        if value == None:
-            print "Failed to find key " + key + " for agent " + agent_id
-            sys.exit(1)
-        else:
-            print value
-            sys.exit(0)
-    elif watch:
-        lastValue = None
-        data = RtDB2(storage_path)
-        (lastValue, life) = data.get(agent_id, key)
-        while True:
-            (value, life) = data.get(agent_id, key)
-            if lastValue != value:
-                print "Value changed!\n --- OLD VALUE ---"
-                print lastValue
-                print "--- NEW VALUE ---"
-                print value
-
-                lastValue = value

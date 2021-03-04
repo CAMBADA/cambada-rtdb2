@@ -1,3 +1,4 @@
+import functools
 import curses
 from curses import panel
 import json
@@ -13,11 +14,12 @@ class RtDBCurses():
 
         self.ctrl_main = RtDBPanelController()
         self.ctrl_aux = RtDBPanelController()
+        self.show_agent_specific = None # None = all, int = show particular agent id
         self.show_details_item = None
         self.show_details_type = 0
         self.sort_item_selected = None  # current_item, selected_item
 
-        self.current_sort_order = ['Agent', 'Key', 'Type', 'Life', 'Size', 'NoKeys']
+        self.current_sort_order = ['Agent', 'Key', 'Shared', 'Age', 'Size']
 
         self.win_details = curses.newwin(0, 0, 0, 0) # h,l,x,y
         self.win_details.addstr(2, 2, "Panel")
@@ -104,6 +106,10 @@ class RtDBCurses():
                     self.ctrl_aux.increment_vertical(int(height_details / 2))
                 else:
                     self.ctrl_main.increment_vertical(int(height / 2))
+            elif key == ord('0'):
+                self.show_agent_specific = None
+            elif key > ord('0') and key <= ord('9'):
+                self.show_agent_specific = int(key - ord('0'))
             else:
                 return 1
         except curses.error:
@@ -140,8 +146,16 @@ class RtDBCurses():
         self.addstr_wrapper(self.stdscr, " " * width, color, height - 1, total_size)
 
     def display_info(self, info_list):
+
+        # filter on agent id?
+        if self.show_agent_specific != None:
+            for idx in reversed(range(len(info_list))):
+                agent = info_list[idx].agent
+                if agent != self.show_agent_specific:
+                    del info_list[idx]
+
         info_list.sort(key=lambda element:
-            reduce(lambda r, h: r + [getattr(element, h.lower())], self.current_sort_order, [])
+            functools.reduce(lambda r, h: r + [getattr(element, h.lower())], self.current_sort_order, [])
         )
         self.listen_keyboard(info_list)
 
@@ -162,20 +176,25 @@ class RtDBCurses():
         # This displays the current menu
         self.ctrl_main.max_vpos = len(info_list)
 
+        format_header = "%5s %-30s %-6s %6s %5s %-s"
+        format_data   = "%5s %-30s %-6s %6s %5d %-s"
         # Checking the maximum value that will be possible to scroll to the right with the new values
         data_list = []
-        self.ctrl_main.maxhpos = 0
-        for value in info_list:
-            str_data = "%5s %-20s %-10s %-20.2f %-7s %-6s %-s" % \
-                    (value.agent, value.key, value.type, value.life, value.size, value.nokeys, value.keys)
+        self.ctrl_main.max_hpos = 0
+        for item in info_list:
+            try:
+                str_data = format_data % \
+                    (item.agent, item.key, ["local", "shared"][item.shared], item.agef(), item.size, item.value)
+            except:
+                str_data = str((item.agent, item.key, ["local", "shared"][item.shared], item.agef(), item.size, item.value))
             data_list.append(str_data)
             if len(str_data) - width + 1 > self.ctrl_main.max_hpos:
                 self.ctrl_main.max_hpos = len(str_data) - width + 1
 
         # Fill the mid panels
         self.addstr_wrapper(self.stdscr, " " * width, color, 1, 0)
-        heading_str = "%5s %-20s %-10s %-20s %-7s %-6s %-s" % \
-                            ("Agent", "Key", "Type", "Life (ms)", "Size", "NoKeys", "   Keys list")
+        heading_str = format_header % \
+                ("Agent", "Key", "Type", "Age  ", "Size", "Value")
         self.addstr_wrapper(self.stdscr, heading_str[self.ctrl_main.hpos:], color, 1, 0)
         for idx, value in enumerate(info_list):
             if idx == self.ctrl_main.vpos:
@@ -198,7 +217,7 @@ class RtDBCurses():
             self.panel_details.move(3, 7)
 
             height_details, width_details = self.win_details.getmaxyx()
-            data = json.dumps(self.show_details_item.data, indent = 4).split('\n')
+            data = json.dumps(self.show_details_item.value, indent = 4, sort_keys=True).split('\n')
             self.ctrl_aux.max_vpos = len(data) - height_details + 3
             self.ctrl_aux.max_hpos = 0
             for value in data:
