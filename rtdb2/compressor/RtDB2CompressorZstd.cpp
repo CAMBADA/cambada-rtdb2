@@ -65,7 +65,9 @@ RtDB2CompressorZstd::~RtDB2CompressorZstd() {
 
 int RtDB2CompressorZstd::compress(const std::string &data, std::string& compressed) {
     size_t buffer_size = ZSTD_compressBound(data.size());
-    char buffer[buffer_size];
+    if (buffer_size >= RTDB2_COMPRESSOR_BUFFER_SIZE)
+        return RTDB2_FAILED_COMPRESSING;
+    char buffer[RTDB2_COMPRESSOR_BUFFER_SIZE] = {0};
 
     size_t final_size;
     if (use_dictionary_) {
@@ -90,8 +92,10 @@ int RtDB2CompressorZstd::decompress(const std::string &compressed_data, std::str
         //printf("Failed to detect the size of the data to be decompressed.\n");
         return RTDB2_FAILED_DECOMPRESSING;
     }
+    if (decompressed_size >= RTDB2_COMPRESSOR_BUFFER_SIZE)
+        return RTDB2_FAILED_DECOMPRESSING;
 
-    char buffer[decompressed_size];
+    char buffer[RTDB2_COMPRESSOR_BUFFER_SIZE] = {0};
     size_t final_size;
     if (use_dictionary_) {
         final_size = ZSTD_decompress_usingDDict(decompressor_ctx_, buffer, decompressed_size,

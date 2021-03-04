@@ -3,6 +3,8 @@
 
 #include <string>
 
+#define RTDB2_COMPRESSOR_BUFFER_SIZE 200000
+
 class RtDB2Compressor {
 public:
     virtual ~RtDB2Compressor() {}

@@ -12,8 +12,10 @@ int RtDB2CompressorLZ4::compress(const std::string &data, std::string& compresse
     int dst_size = LZ4_compressBound(data.size());
     if (dst_size == 0)
         return RTDB2_FAILED_COMPRESSING;
+    if (dst_size >= RTDB2_COMPRESSOR_BUFFER_SIZE)
+        return RTDB2_FAILED_COMPRESSING;
 
-    char buffer[dst_size];
+    char buffer[RTDB2_COMPRESSOR_BUFFER_SIZE] = {0};
     int size = LZ4_compress_default(data.c_str(), &buffer[0], data.size(), dst_size);
     compressed.assign(std::string(buffer, size));
     return RTDB2_SUCCESS;
@@ -27,7 +29,9 @@ int RtDB2CompressorLZ4::decompress(const std::string &data, std::string& decompr
         factor = iteration * iteration;
 
         buffer_size = data.size() * 10 * factor;
-        char buffer[buffer_size];
+        if (buffer_size >= RTDB2_COMPRESSOR_BUFFER_SIZE)
+            return RTDB2_FAILED_DECOMPRESSING;
+        char buffer[RTDB2_COMPRESSOR_BUFFER_SIZE];
         size_final = LZ4_decompress_safe(data.c_str(), &buffer[0], data.size(), buffer_size);
 
         if (size_final > 0) {
