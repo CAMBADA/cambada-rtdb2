@@ -15,9 +15,7 @@ This project uses some 3rd-party libraries:
 ## Instructions
 
 ```
-cd build
-cmake ..
-make
+build.sh
 ```
 
 ## Also included
