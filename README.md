@@ -26,7 +26,9 @@ This project uses some 3rd-party libraries:
 ## Instructions
 
 ```
+clean.sh # optional clean before build
 build.sh
+test.sh # optional tests and demo's
 ```
 
 ## Also included
