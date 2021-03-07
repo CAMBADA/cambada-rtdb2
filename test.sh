@@ -8,6 +8,10 @@ if [ -e $p ]; then
     \rm -rf $p || exit 1
 fi
 
+# RTDB now requires this environment variable to be set
+export RTDB_CONFIG_PATH=$(dirname "$0")/config
+echo RTDB_CONFIG_PATH=$RTDB_CONFIG_PATH
+
 # assumes build has completed successfully
 cd build/
 make test

@@ -1,22 +1,28 @@
-<!-- This file can be generated using xrtdb in order to 
-     exist backward compatibility between RtDB and RtDB2 -->
 <!-- Every key might have the following parameters:
      * id that stands for a string identifier;
      * shared that indicates if the object is shared or local to
        real-time database;
-     * oid (optional) corresponds to an older identifier in the
-       RtDB older version (this field should disappear after a 
-       complete upgrade.
      * period (optional) and phase (optional) in order to schedule
-       how an item is shared by the Communication Manager -->
+       how an item is shared by the Communication Manager
+     * timeout (optional) stop sending items after their age exceeds timeout -->
+<!-- Communication documentation:
+     * multiCastIP     (mandatory) assigned group address according to MSL rules
+     * interface       (optional)  interface overrule, 'auto' (default) will resolve to available wireless adapter
+     * frequency       (mandatory) transmitter frequency (Hz)
+     * port            (mandatory) port to use
+     * compression     (mandatory) boolean flag to enable compression
+     * loopback        (optional)  whether or not to receive own messages (default 'false')
+     -->
 
 <RtDB2Configuration>
   <General>
-    <DefaultKeyValue shared="true" period="1" phase="0"/>
-    <Compressor name="zstd" dictionary="true"/>
+    <DefaultKeyValue shared="false" period="1" phase="0" timeout="1.0"/>
+    <Compressor name="zstd" dictionary="false"/>
+    <Communication multiCastIP="224.16.32.74" interface="auto" frequency="30" port="8001" compression="true" loopback="false" send="true"/>
   </General>
   <Keys>
-    <key id="EXAMPLE_ITEM" oid="0"/>
-    <key id="EXAMPLE_ITEM_MAPPED" shared="false" oid="1"/>
+    <key id="EXAMPLE_ITEM"/>
+    <key id="EXAMPLE_ITEM_MAPPED" shared="false"/>
   </Keys>
 </RtDB2Configuration>
+

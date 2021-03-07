@@ -31,6 +31,9 @@ build.sh
 test.sh # optional tests and demo's
 ```
 
+RTDB needs to know where to find the configuration file(s).
+You should set environment variable RTDB_CONFIG_PATH.
+
 ## Also included
 
 - Comm: process used to broadcast data between agents in the team
