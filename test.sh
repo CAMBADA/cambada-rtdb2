@@ -9,7 +9,7 @@ if [ -e $p ]; then
 fi
 
 # RTDB now requires this environment variable to be set
-export RTDB_CONFIG_PATH=$(dirname "$0")/config
+export RTDB_CONFIG_PATH=$(realpath $(dirname "$0"))/config
 echo RTDB_CONFIG_PATH=$RTDB_CONFIG_PATH
 
 # assumes build has completed successfully
