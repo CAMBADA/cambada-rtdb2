@@ -8,27 +8,27 @@
                                     <xs:sequence>
                                           <xs:element name="DefaultKeyValue">
                                                 <xs:complexType>
-                                                      <xs:attribute name="shared" type="xs:string"></xs:attribute>
-                                                      <xs:attribute name="period" type="xs:int"></xs:attribute>
-                                                      <xs:attribute name="phase" type="xs:int"></xs:attribute>
-                                                      <xs:attribute name="timeout" type="xs:decimal"></xs:attribute>
+                                                      <xs:attribute name="shared" type="xs:boolean" default="true"></xs:attribute>
+                                                      <xs:attribute name="period" type="xs:int" default="1"></xs:attribute>
+                                                      <xs:attribute name="phase" type="xs:int" default="0"></xs:attribute>
+                                                      <xs:attribute name="timeout" type="xs:decimal" default="1.0"></xs:attribute>
                                                 </xs:complexType>
                                           </xs:element>
                                           <xs:element name="Compressor">
                                                 <xs:complexType>
-                                                      <xs:attribute name="name" type="xs:string"></xs:attribute>
-                                                      <xs:attribute name="dictionary" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="name" type="compressorType"></xs:attribute>
+                                                      <xs:attribute name="dictionary" type="xs:boolean" default="false"></xs:attribute>
                                                 </xs:complexType>
                                           </xs:element>
                                           <xs:element name="Communication">
                                                 <xs:complexType>
-                                                      <xs:attribute name="multiCastIP" type="xs:string"></xs:attribute>
-                                                      <xs:attribute name="interface" type="xs:string"></xs:attribute>
-                                                      <xs:attribute name="frequency" type="xs:int"></xs:attribute>
-                                                      <xs:attribute name="port" type="xs:int"></xs:attribute>
-                                                      <xs:attribute name="compression" type="xs:string"></xs:attribute>
-                                                      <xs:attribute name="loopback" type="xs:string"></xs:attribute>
-                                                      <xs:attribute name="send" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="multiCastIP" type="xs:string" use="required"></xs:attribute>
+                                                      <xs:attribute name="interface" type="xs:string" default="auto"></xs:attribute>
+                                                      <xs:attribute name="frequency" type="xs:int" default="30"></xs:attribute>
+                                                      <xs:attribute name="port" type="xs:int" default="8001"></xs:attribute>
+                                                      <xs:attribute name="compression" type="xs:boolean" default="false"></xs:attribute>
+                                                      <xs:attribute name="loopback" type="xs:boolean" default="false"></xs:attribute>
+                                                      <xs:attribute name="send" type="xs:boolean" default="true"></xs:attribute>
                                                 </xs:complexType>
                                           </xs:element>
                                     </xs:sequence>
@@ -39,8 +39,8 @@
                                     <xs:sequence>
                                           <xs:element name="key" maxOccurs="unbounded">
                                                 <xs:complexType>
-                                                      <xs:attribute name="id" type="xs:string"></xs:attribute>
-                                                      <xs:attribute name="shared" type="xs:boolean"></xs:attribute>
+                                                      <xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
+                                                      <xs:attribute name="shared" type="xs:boolean" default="true"></xs:attribute>
                                                 </xs:complexType>
                                           </xs:element>
                                     </xs:sequence>
@@ -49,4 +49,11 @@
                   </xs:sequence>
             </xs:complexType>
       </xs:element>
+
+      <xs:simpleType name="compressorType">
+            <xs:restriction base="xs:string">
+                  <xs:enumeration value="zstd"/>
+                  <xs:enumeration value="lz4"/>
+            </xs:restriction>
+      </xs:simpleType>
 </xs:schema>
