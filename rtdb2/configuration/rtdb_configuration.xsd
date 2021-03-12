@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+      <xs:element name="RtDB2Configuration">
+            <xs:complexType>
+                  <xs:sequence>
+                        <xs:element name="General">
+                              <xs:complexType>
+                                    <xs:sequence>
+                                          <xs:element name="DefaultKeyValue">
+                                                <xs:complexType>
+                                                      <xs:attribute name="shared" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="period" type="xs:int"></xs:attribute>
+                                                      <xs:attribute name="phase" type="xs:int"></xs:attribute>
+                                                      <xs:attribute name="timeout" type="xs:decimal"></xs:attribute>
+                                                </xs:complexType>
+                                          </xs:element>
+                                          <xs:element name="Compressor">
+                                                <xs:complexType>
+                                                      <xs:attribute name="name" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="dictionary" type="xs:string"></xs:attribute>
+                                                </xs:complexType>
+                                          </xs:element>
+                                          <xs:element name="Communication">
+                                                <xs:complexType>
+                                                      <xs:attribute name="multiCastIP" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="interface" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="frequency" type="xs:int"></xs:attribute>
+                                                      <xs:attribute name="port" type="xs:int"></xs:attribute>
+                                                      <xs:attribute name="compression" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="loopback" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="send" type="xs:string"></xs:attribute>
+                                                </xs:complexType>
+                                          </xs:element>
+                                    </xs:sequence>
+                              </xs:complexType>
+                        </xs:element>
+                        <xs:element name="Keys">
+                              <xs:complexType>
+                                    <xs:sequence>
+                                          <xs:element name="key" maxOccurs="unbounded">
+                                                <xs:complexType>
+                                                      <xs:attribute name="id" type="xs:string"></xs:attribute>
+                                                      <xs:attribute name="shared" type="xs:boolean"></xs:attribute>
+                                                </xs:complexType>
+                                          </xs:element>
+                                    </xs:sequence>
+                              </xs:complexType>
+                        </xs:element>
+                  </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+</xs:schema>

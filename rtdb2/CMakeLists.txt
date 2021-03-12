@@ -38,6 +38,13 @@ if(ZSTD_FOUND)
     include_directories(SYSTEM ${ZSTD_INCLUDE_DIR})
 endif()
 
+### Define and create a directory for generated header files
+set(GENERATED_INC_DIR ${CMAKE_BINARY_DIR}/include)
+file(MAKE_DIRECTORY ${GENERATED_INC_DIR})
+include_directories(
+    ${GENERATED_INC_DIR}
+)
+
 ### RtDB2 Compilation
 set(RTDB2_TARGET_DEPENDENCIES lmdb msgpack lz4 zstd)
 # Library target sources (cpp/h)
@@ -73,4 +80,4 @@ set_target_properties(rtdb2 PROPERTIES COMPILE_FLAGS "-fPIC")
 
 ### Call the CMake inside dictionary_generator
 #TODO add_subdirectory(dictionary_generator)
-
+add_subdirectory(configuration)
