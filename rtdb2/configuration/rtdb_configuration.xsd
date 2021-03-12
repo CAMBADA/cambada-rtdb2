@@ -24,9 +24,9 @@
                                                 <xs:complexType>
                                                       <xs:attribute name="multiCastIP" type="xs:string" use="required"></xs:attribute>
                                                       <xs:attribute name="interface" type="xs:string" default="auto"></xs:attribute>
-                                                      <xs:attribute name="frequency" type="xs:int" default="30"></xs:attribute>
-                                                      <xs:attribute name="port" type="xs:int" default="8001"></xs:attribute>
-                                                      <xs:attribute name="compression" type="xs:boolean" default="false"></xs:attribute>
+                                                      <xs:attribute name="frequency" type="xs:int" use="required"></xs:attribute>
+                                                      <xs:attribute name="port" type="xs:int" use="required"></xs:attribute>
+                                                      <xs:attribute name="compression" type="xs:boolean" use="required"></xs:attribute>
                                                       <xs:attribute name="loopback" type="xs:boolean" default="false"></xs:attribute>
                                                       <xs:attribute name="send" type="xs:boolean" default="true"></xs:attribute>
                                                 </xs:complexType>
@@ -41,6 +41,8 @@
                                                 <xs:complexType>
                                                       <xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
                                                       <xs:attribute name="shared" type="xs:boolean" default="true"></xs:attribute>
+                                                      <xs:attribute name="period" type="xs:int" default="1"></xs:attribute>
+                                                      <xs:attribute name="phase" type="xs:int" default="0"></xs:attribute>
                                                 </xs:complexType>
                                           </xs:element>
                                     </xs:sequence>
