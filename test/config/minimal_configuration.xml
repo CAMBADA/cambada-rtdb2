@@ -1,0 +1,23 @@
+<!-- Every key might have the following parameters:
+     * id that stands for a string identifier;
+     * shared that indicates if the object is shared or local to
+       real-time database;
+     * period (optional) and phase (optional) in order to schedule
+       how an item is shared by the Communication Manager
+     * timeout (optional) stop sending items after their age exceeds timeout -->
+<!-- Communication documentation:
+     * multiCastIP     (mandatory) assigned group address according to MSL rules
+     * interface       (optional)  interface overrule, 'auto' (default) will resolve to available wireless adapter
+     * frequency       (mandatory) transmitter frequency (Hz)
+     * port            (mandatory) port to use
+     * compression     (mandatory) boolean flag to enable compression
+     * loopback        (optional)  whether or not to receive own messages (default 'false')
+     -->
+
+<RtDB2Configuration>
+  <General>
+    <Communication multiCastIP="224.16.32.74" frequency="25" port="1234" compression="true"/>
+  </General>
+  <Keys/>
+</RtDB2Configuration>
+
