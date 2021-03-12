@@ -38,6 +38,7 @@ class RtDB2Configuration {
 public:
     RtDB2Configuration();
 
+    void load_configuration();
     int parse_configuration(std::string file_path = RTDB2_CONFIGURATION_FILE);
     const KeyDetail& get_key_default() const;
     const KeyDetail& get_key_details(const std::string& id) const;

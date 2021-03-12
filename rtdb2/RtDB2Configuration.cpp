@@ -43,6 +43,9 @@ private:
 };
 
 RtDB2Configuration::RtDB2Configuration() {
+}
+
+void RtDB2Configuration::load_configuration() {
     std::string configuration_path = "";;
     char *cp = NULL;
     if ((cp = getenv("RTDB_CONFIG_PATH")) != NULL)
