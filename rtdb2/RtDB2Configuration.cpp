@@ -1,5 +1,6 @@
 #include "RtDB2Configuration.h"
 #include "RtDB2ErrorCode.h"
+#include "rtdb_configuration_generated.h"
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
@@ -42,7 +43,10 @@ private:
     int error_count, fatal_count, warning_count, total_count;
 };
 
-RtDB2Configuration::RtDB2Configuration() {
+RtDB2Configuration::RtDB2Configuration()
+:
+    version(1)
+{
 }
 
 void RtDB2Configuration::load_configuration() {
@@ -63,6 +67,78 @@ void RtDB2Configuration::load_configuration() {
 }
 
 int RtDB2Configuration::parse_configuration(std::string file_path) {
+    switch (version) {
+        case 2:
+            return parse_configuration_v2(file_path);
+        default:
+            return parse_configuration_v1(file_path);
+    }
+}
+
+int RtDB2Configuration::parse_configuration_v2(std::string file_path) {
+    try
+    {
+        xml_schema::properties properties;
+        // alternative for xsi:noNamespaceSchemaLocation definition in xml
+        std::string xsd("rtdb_configuration.xsd");
+        properties.no_namespace_schema_location(xsd);
+
+        // TODO: Enable xsd validation. E.g. by embedding xsd in library:
+        // https://stackoverflow.com/questions/4158900/embedding-resources-in-executable-using-gcc
+        // https://stackoverflow.com/questions/11813271/embed-resources-eg-shader-code-images-into-executable-library-with-cmake
+        ::std::unique_ptr<rtdbconfig::RtDBConfiguration> config(rtdbconfig::RtDB2Configuration(
+            file_path, xml_schema::flags::dont_validate));
+
+        // Communication settings
+        communication_settings_.multiCastIP = config->General().Communication().multiCastIP();
+        communication_settings_.compression = config->General().Communication().compression();
+        communication_settings_.frequency = config->General().Communication().frequency();
+        communication_settings_.interface = config->General().Communication().interface();
+        communication_settings_.loopback = config->General().Communication().loopback();
+        communication_settings_.port = config->General().Communication().port();
+        communication_settings_.send = config->General().Communication().send();
+
+        // Compressor settings
+        switch (config->General().Compressor().name()) {
+            case rtdbconfig::compressorType::zstd:
+                compressor_settings_.name = "zstd";
+                break;
+            case rtdbconfig::compressorType::lz4:
+                compressor_settings_.name = "lz4";
+                break;
+            default:
+                compressor_settings_.name = "zstd";
+        }
+        compressor_settings_.use_dictionary = config->General().Compressor().dictionary();
+
+        // DefaultKeyValue
+        default_details_.period = config->General().DefaultKeyValue().period();
+        default_details_.phase_shift = config->General().DefaultKeyValue().phase();
+        default_details_.shared = config->General().DefaultKeyValue().shared();
+        default_details_.timeout = config->General().DefaultKeyValue().timeout();
+
+        // KeyDetails
+        for (rtdbconfig::Keys::key_const_iterator key (config->Keys().key().begin());
+            key != config->Keys().key().end(); ++key)
+        {
+            KeyDetail kd;
+            kd.period = key->period().present() ? key->period().get() : default_details_.period;
+            kd.phase_shift = key->phase().present() ? key->phase().get() : default_details_.phase_shift;
+            kd.shared = key->shared().present() ? key->shared().get() : default_details_.shared;
+            // kd.timeout = key->timeout().present() ? key->period().get() : default_details_.period;
+            insert_key_detail(to_upper(key->id()), kd);
+        }
+    }
+    catch (const xml_schema::exception& e)
+    {
+        std::cerr << e << std::endl;
+        return RTDB2_FAILED_PARSING_CONFIG_FILE;
+    }
+
+    return RTDB2_SUCCESS;
+}
+
+int RtDB2Configuration::parse_configuration_v1(std::string file_path) {
     try {
         xercesc::XMLPlatformUtils::Initialize();
     } catch(xercesc::XMLException& e) {

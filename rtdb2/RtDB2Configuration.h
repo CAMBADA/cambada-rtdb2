@@ -49,10 +49,12 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, RtDB2Configuration& obj);
 private:
+    int parse_configuration_v1(std::string file_path);
+    int parse_configuration_v2(std::string file_path);
     void associate_keys_int_string(int oid, std::string id);
     void insert_key_detail(std::string id, KeyDetail detail);
 
-
+    int version;
     std::map<std::string, KeyDetail> keys_details_;
     std::map<int, std::string> reverse_key_map_;
     KeyDetail default_details_;
