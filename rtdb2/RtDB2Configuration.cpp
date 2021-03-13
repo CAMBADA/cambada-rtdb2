@@ -118,19 +118,21 @@ int RtDB2Configuration::parse_configuration_v2(std::string file_path) {
         default_details_.shared = config->General().DefaultKeyValue().shared();
         default_details_.timeout = config->General().DefaultKeyValue().timeout();
 
-        // KeyDetails
-        for (rtdbconfig::Keys::key_const_iterator key (config->Keys().key().begin());
-            key != config->Keys().key().end(); ++key)
-        {
-            KeyDetail kd;
-            kd.period = key->period().present() ? key->period().get() : default_details_.period;
-            kd.phase_shift = key->phase().present() ? key->phase().get() : default_details_.phase_shift;
-            kd.shared = key->shared().present() ? key->shared().get() : default_details_.shared;
-            kd.timeout = key->timeout().present() ? key->timeout().get() : default_details_.timeout;
-            insert_key_detail(to_upper(key->id()), kd);
+        // Keys
+        if (config->Keys().present()) {
+            for (rtdbconfig::Keys::key_const_iterator key (config->Keys().get().key().begin());
+                key != config->Keys().get().key().end(); ++key)
+            {
+                KeyDetail kd;
+                kd.period = key->period().present() ? key->period().get() : default_details_.period;
+                kd.phase_shift = key->phase().present() ? key->phase().get() : default_details_.phase_shift;
+                kd.shared = key->shared().present() ? key->shared().get() : default_details_.shared;
+                kd.timeout = key->timeout().present() ? key->timeout().get() : default_details_.timeout;
+                insert_key_detail(to_upper(key->id()), kd);
 
-            if (key->oid().present()) {
-                associate_keys_int_string(key->oid().get(), to_upper(key->id()));
+                if (key->oid().present()) {
+                    associate_keys_int_string(key->oid().get(), to_upper(key->id()));
+                }
             }
         }
     }
