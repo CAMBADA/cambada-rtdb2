@@ -17,6 +17,8 @@
 <RtDB2Configuration>
   <General>
     <Communication multiCastIP="224.16.32.74" frequency="25" port="1234" compression="true"/>
+    <Compressor/>
+    <DefaultKeyValue/>
   </General>
   <Keys/>
 </RtDB2Configuration>
