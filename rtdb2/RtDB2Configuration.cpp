@@ -107,6 +107,7 @@ int RtDB2Configuration::parse_configuration_v2(std::string file_path) {
                 compressor_settings_.name = "lz4";
                 break;
             default:
+                std::cerr << "[WARNING] Unsupported compressor type: " << config->General().Compressor().name() << std::endl;
                 compressor_settings_.name = "zstd";
         }
         compressor_settings_.use_dictionary = config->General().Compressor().dictionary();
@@ -125,8 +126,13 @@ int RtDB2Configuration::parse_configuration_v2(std::string file_path) {
             kd.period = key->period().present() ? key->period().get() : default_details_.period;
             kd.phase_shift = key->phase().present() ? key->phase().get() : default_details_.phase_shift;
             kd.shared = key->shared().present() ? key->shared().get() : default_details_.shared;
-            // kd.timeout = key->timeout().present() ? key->period().get() : default_details_.period;
+            kd.timeout = key->timeout().present() ? key->timeout().get() : default_details_.timeout;
             insert_key_detail(to_upper(key->id()), kd);
+
+            if (key->oid().present()) {
+                associate_keys_int_string(key->oid().get(), to_upper(key->id()));
+            }
+
         }
     }
     catch (const xml_schema::exception& e)

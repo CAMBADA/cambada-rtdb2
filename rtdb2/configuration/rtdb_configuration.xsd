@@ -42,8 +42,10 @@
                                           <xs:complexType>
                                                 <xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
                                                 <xs:attribute name="shared" type="xs:boolean"></xs:attribute>
+                                                <xs:attribute name="oid" type="xs:int"></xs:attribute>
                                                 <xs:attribute name="period" type="xs:int"></xs:attribute>
                                                 <xs:attribute name="phase" type="xs:int"></xs:attribute>
+                                                <xs:attribute name="timeout" type="xs:decimal"></xs:attribute>
                                           </xs:complexType>
                                     </xs:element>
                               </xs:sequence>

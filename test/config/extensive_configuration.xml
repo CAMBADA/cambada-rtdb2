@@ -24,7 +24,9 @@
     <key id="shared_key"/>
     <key id="local_key" shared="false"/>
     <key id="another_shared_key" shared="true"/>
-    <key id="all_options_key" shared="true" period="2" phase="3"/>
+    <key id="all_options_key" shared="true" period="2" phase="3" timeout="4.0"/>
+    <key id="oid_key1" oid="1"/>
+    <key id="oid_key15" oid="15"/>
   </Keys>
 </RtDB2Configuration>
 
