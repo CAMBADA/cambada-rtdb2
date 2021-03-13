@@ -67,7 +67,7 @@ set(RTDB2_LIBRARY_DEPENDENCIES
         xerces-c pthread)
 ### Adding RTDB2 as Library
 add_library(rtdb2 ${RTDB2_LIBRARY_SOURCES})
-target_link_libraries(rtdb2 RtDB::definitions RtDB::utils)
+target_link_libraries(rtdb2 RtDB::definitions RtDB::utils RtDB::config)
 target_link_libraries(rtdb2 ${RTDB2_LIBRARY_DEPENDENCIES})
 # If the interface has a public include of the dependency (e.g. LMDB), it must be packed with the RtDB2 library
 target_include_directories(rtdb2

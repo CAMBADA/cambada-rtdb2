@@ -14,6 +14,10 @@ add_library(rtdbconfig
   ${SOURCE_FILES}
 )
 
+add_library(RtDB::config ALIAS rtdbconfig)
+
+set_target_properties(rtdbconfig PROPERTIES COMPILE_FLAGS "-fPIC")
+
 add_dependencies(rtdbconfig
   rtdbconfig_xsd
 )
@@ -21,6 +25,7 @@ add_dependencies(rtdbconfig
 add_custom_command(OUTPUT ${RTDB_CONFIGURATION_CPP}
   COMMAND xsdcxx cxx-tree
     --std c++11
+    --namespace-map =rtdbconfig
     --generate-serialization
     --hxx-suffix _generated.h
     --cxx-suffix _generated.cpp
