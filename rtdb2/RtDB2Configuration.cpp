@@ -132,7 +132,6 @@ int RtDB2Configuration::parse_configuration_v2(std::string file_path) {
             if (key->oid().present()) {
                 associate_keys_int_string(key->oid().get(), to_upper(key->id()));
             }
-
         }
     }
     catch (const xml_schema::exception& e)

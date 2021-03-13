@@ -22,6 +22,7 @@ add_dependencies(rtdbconfig
   rtdbconfig_xsd
 )
 
+# https://www.codesynthesis.com/projects/xsd/documentation/cxx/tree/guide/
 add_custom_command(OUTPUT ${RTDB_CONFIGURATION_CPP}
   COMMAND xsdcxx cxx-tree
     --std c++11
