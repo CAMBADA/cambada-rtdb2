@@ -45,7 +45,7 @@ private:
 
 RtDB2Configuration::RtDB2Configuration()
 :
-    version(1)
+    version(2)
 {
 }
 
