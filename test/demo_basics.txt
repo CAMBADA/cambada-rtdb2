@@ -1,10 +1,10 @@
-writing data into RTDB:
+writing struct data into RTDB:
 alive = 1
 pos = (1.1, 2.5, 0)
 intention = WIN
 
 sleeping a bit ...
-reading data from RTDB:
+reading struct data from RTDB:
 alive = 1
 pos = (1.1, 2.5, 0)
 intention = WIN

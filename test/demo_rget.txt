@@ -1,0 +1,5 @@
+   age: 1s
+shared: False
+  list: False
+ value: {'pos': [1.100000023841858, 2.5, 0.0], 'alive': True, 'intention': 'WIN'}
+

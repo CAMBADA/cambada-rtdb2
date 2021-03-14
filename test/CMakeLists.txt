@@ -11,4 +11,5 @@ target_link_libraries(demo_basics rtdb2)
 
 # tests
 add_test(test_basics ${CMAKE_CURRENT_LIST_DIR}/test_basics.sh)
+add_test(test_python_tools ${CMAKE_CURRENT_LIST_DIR}/test_python_tools.sh)
 
