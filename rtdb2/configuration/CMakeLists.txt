@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5.1)
 
+# make sure xsdxcc is installed
+find_package(XSDCXX REQUIRED)
+
 # name of generated source file
 set(RTDB_CONFIGURATION_XSD ${CMAKE_CURRENT_SOURCE_DIR}/rtdb_configuration.xsd)
 set(RTDB_CONFIGURATION_H rtdb_configuration_generated.h)
@@ -24,7 +27,7 @@ add_dependencies(rtdbconfig
 
 # https://www.codesynthesis.com/projects/xsd/documentation/cxx/tree/guide/
 add_custom_command(OUTPUT ${RTDB_CONFIGURATION_CPP}
-  COMMAND xsdcxx cxx-tree
+  COMMAND ${XSDCXX} cxx-tree
     --std c++11
     --namespace-map =rtdbconfig
     --generate-serialization
@@ -38,4 +41,3 @@ add_custom_command(OUTPUT ${RTDB_CONFIGURATION_CPP}
 add_custom_target(rtdbconfig_xsd
   DEPENDS ${RTDB_CONFIGURATION_CPP}
 )
-

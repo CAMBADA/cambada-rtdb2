@@ -38,6 +38,12 @@ if(ZSTD_FOUND)
     include_directories(SYSTEM ${ZSTD_INCLUDE_DIR})
 endif()
 
+### xerces-c
+find_package(XercesC 3.2.0 REQUIRED)
+if(XercesC_FOUND)
+    include_directories(SYSTEM ${XercesC_INCLUDE_DIRS})
+endif()
+
 ### Define and create a directory for generated header files
 set(GENERATED_INC_DIR ${CMAKE_BINARY_DIR}/include)
 file(MAKE_DIRECTORY ${GENERATED_INC_DIR})
