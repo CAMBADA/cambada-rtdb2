@@ -1,0 +1,30 @@
+FROM ubuntu:20.04
+ENV REFRESHED_AT 2021-03-15
+RUN apt -qq update && apt upgrade -y
+
+COPY src/keyboard /etc/default/keyboard
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/Amsterdam" apt -y install \
+    tzdata keyboard-configuration \
+ && ln -fs /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+
+RUN apt install -y \
+    cmake \
+    gosu \
+    g++ \
+    libboost-all-dev \
+    liblmdb-dev \
+    liblz4-dev \
+    libmsgpack-dev \
+    libxerces-c3-dev \
+    libzstd-dev \
+ && rm -rf /var/lib/apt/lists/* \
+ && ln -s /usr/include/json-c/ /usr/include/json
+
+# Set environment variables
+RUN echo 'export RTDB_BUILD=/rtdb/build' >> /root/.bashrc \
+ && echo 'export RTDB_CONFIG_PATH=/rtdb/config' >> /root/.bashrc
+
+COPY src/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod a+x /docker-entrypoint.sh
+ENTRYPOINT [ "/docker-entrypoint.sh", "bash" ]
+
