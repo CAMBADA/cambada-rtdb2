@@ -27,6 +27,7 @@
 
 // debugging
 #include "tprintf.hpp"
+#define RTDB2_DEBUG_MODE 1
 #ifdef RTDB2_DEBUG_MODE
     #define rdebug(...) tprintf(__VA_ARGS__)
 #else
@@ -176,7 +177,7 @@ template<typename T>
 int RtDB2::putCore(std::string const &key, T *value, int agentId)
 {
     if (value == NULL) return RTDB2_VALUE_POINTING_TO_NULL;
-    rdebug("putCore start key=%s", key.c_str());
+    rdebug("putCore start key=%s at p=%p", key.c_str(), this);
 
     // serialize the value
     std::string serialized_data;
