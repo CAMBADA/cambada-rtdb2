@@ -34,30 +34,33 @@ struct CommunicationSettings
     bool send = true;
 };
 
-class RtDB2Configuration {
+class RtDB2Configuration
+{
 public:
-    RtDB2Configuration();
+    RtDB2Configuration(const std::string &database = "default", const std::string &network = "default");
 
     void load_configuration();
     int parse_configuration(std::string file_path = RTDB2_CONFIGURATION_FILE);
-    const KeyDetail& get_key_default() const;
-    const KeyDetail& get_key_details(const std::string& id) const;
-    const KeyDetail& get_key_details(const int& oid) const;
-    const std::string* get_string_identifier(const int& oid) const;
-    const CompressorSettings& get_compressor_settings() const;
-    const CommunicationSettings& get_communication_settings() const;
+    const KeyDetail &get_key_default() const;
+    const KeyDetail &get_key_details(const std::string &id) const;
+    const KeyDetail &get_key_details(const int &oid) const;
+    const std::string *get_string_identifier(const int &oid) const;
+    const CompressorSettings &get_compressor_settings() const;
+    const CommunicationSettings &get_communication_settings() const;
 
-    friend std::ostream& operator<<(std::ostream& os, RtDB2Configuration& obj);
+    friend std::ostream &operator<<(std::ostream &os, RtDB2Configuration &obj);
+
 private:
     void associate_keys_int_string(int oid, std::string id);
     void insert_key_detail(std::string id, KeyDetail detail);
 
+    std::string database_;
+    std::string network_;
     std::map<std::string, KeyDetail> keys_details_;
     std::map<int, std::string> reverse_key_map_;
     KeyDetail default_details_;
     CompressorSettings compressor_settings_;
     CommunicationSettings communication_settings_;
 };
-
 
 #endif //CAMBADA_RTDB2KEYS_H

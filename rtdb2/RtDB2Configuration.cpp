@@ -6,7 +6,8 @@
 
 std::string to_upper(const std::string &s);
 
-RtDB2Configuration::RtDB2Configuration()
+RtDB2Configuration::RtDB2Configuration(const std::string &database, const std::string &network)
+    : database_(database), network_(network)
 {
 }
 
@@ -45,14 +46,14 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
 
         bool parsed = false;
         // parse v2 style
-        if (config->Networks().present())
+        if (config->Networks().present() && network_.compare("") != 0)
         {
             parsed = true;
+            bool found = false;
             for (rtdbconfig::Networks::Network_const_iterator network(config->Networks().get().Network().begin());
                  network != config->Networks().get().Network().end(); ++network)
             {
-                // for now only provide support for the default network
-                if (network->name().compare("default") == 0)
+                if (network->name().compare(network_) == 0)
                 {
                     communication_settings_.multiCastIP = network->MulticastAddress();
                     communication_settings_.frequency = network->Frequency();
@@ -79,17 +80,24 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                         }
                         compressor_settings_.use_dictionary = network->Compression().get().UseDictionary();
                     }
+                    found = true;
+                    break;
                 }
             }
+            if (!found)
+            {
+                std::cerr << "[ERROR] No Network named '" << network_ << "' in: " << file_path << std::endl;
+                return RTDB2_FAILED_PARSING_CONFIG_FILE;
+            }
         }
-        if (config->Databases().present())
+        if (config->Databases().present() && database_.compare("") != 0)
         {
             parsed = true;
-            // for now only provide support for the default network
+            bool found = false;
             for (rtdbconfig::Databases::Database_const_iterator database(config->Databases().get().Database().begin());
                  database != config->Databases().get().Database().end(); ++database)
             {
-                if (database->name().compare("default") == 0)
+                if (database->name().compare(database_) == 0)
                 {
                     // DefaultKeyValue
                     bool present = database->KeyDefaults().present();
@@ -114,12 +122,26 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                             associate_keys_int_string(key->oid().get(), to_upper(key->id()));
                         }
                     }
+                    found = true;
+                    break;
                 }
+            }
+            if (!found)
+            {
+                std::cerr << "[ERROR] No Database named '" << database_ << "' in: " << file_path << std::endl;
+                return RTDB2_FAILED_PARSING_CONFIG_FILE;
             }
         }
         if (!parsed)
         {
             // parse v1 style
+            if (network_.compare("default") != 0 || database_.compare("default") != 0)
+            {
+                std::cerr << "[ERROR] Network named '" << network_ << "' and Database named '"
+                          << database_ << "' not found in: " << file_path << std::endl;
+                return RTDB2_FAILED_PARSING_CONFIG_FILE;
+            }
+
             if (config->General().present())
             {
                 rtdbconfig::General general = config->General().get();
