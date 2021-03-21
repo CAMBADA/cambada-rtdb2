@@ -1,6 +1,8 @@
 #!/bin/bash
 
+TESTBIN=$1
+shift;
 
 cd "$(dirname "$0")"
-./$1 | diff - $1.txt
+./$TESTBIN $* | diff - $TESTBIN.txt
 

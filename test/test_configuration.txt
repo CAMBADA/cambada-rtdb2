@@ -12,7 +12,7 @@ Defaults:
 	Period: 1
 	Phase shift: 0
 
-=== Minimal configuration ===
+=== config/minimal_configuration.xml ===
 	multiCastIP = 224.16.32.74
 	frequency   = 25
 	port        = 1234
@@ -26,7 +26,7 @@ Defaults:
 	Period: 1
 	Phase shift: 0
 
-=== Extensive configuration ===
+=== config/extensive_configuration.xml ===
 	multiCastIP = 224.16.32.188
 	frequency   = 40
 	port        = 8011

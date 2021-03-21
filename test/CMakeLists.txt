@@ -14,5 +14,8 @@ target_link_libraries(test_configuration rtdb2)
 
 # tests
 add_test(test_basics ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh demo_basics)
-add_test(test_configuration ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_configuration)
+add_test(test_configuration ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_configuration
+    config/minimal_configuration.xml
+    config/extensive_configuration.xml
+)
 
