@@ -1,0 +1,80 @@
+<!--
+  RtDB configuration consists of two independent sections:
+  * Networks  - this section is used by the comm process
+  * Databases - this section is used by the client process
+
+  Networks
+  ========
+  The Networks section contains the individual Network definitions. Each
+  Network definition must have a unique name.
+
+  M: mandatory element/atrribute
+  O: optional element/attribute
+
+  Network attributes:
+  * name             (O) unique name of the Network (default 'default')
+  * database         (O) database to shared on this Network (default 'default')
+  * loopback         (O) whether or not to receive own messages (default 'false')
+  * send             (O) ?
+  Network elements:
+  * MulticastAddress (M) assigned group address according to MSL rules
+  * MulticastPort    (M) port to use
+  * Interface        (O) interface overrule, 'auto' (default) will resolve to
+                         available wireless adapter
+  * Frequency        (M) transmitter frequency (Hz)
+  * Compression      (O) enables compression
+
+  Compression attributes:
+  * type             (O) type of compression: 'zstd' or 'lz4' (default: 'zstd')
+  Compression elements:
+  * UseDictionary    (O) enables use of dictionary
+
+  Databases
+  =========
+  The Databases section contains the individual Database definitions. Each
+  Database definition must have a unique name.
+
+  Database attributes:
+  * name             (O) unique name of the Network (default 'default')
+
+  Database elements:
+  * KeyDefaults      (O) specifies the default values for the Key attributes for
+                         this database. when omitted the system defaults are used.
+  * Keys             (M) specifies the keys for this database.
+
+  Key/KeyDefaults attributes:
+  * shared           (O) specifies if the object is shared or local to
+                         real-time database (default 'true').
+  * period           (O) specifies the sharing interval
+                         (default '1' indicating each interval).
+  * phase            (O) specifies in which phase of a period an item is
+                         shared (default '0' indicating first slot of a period).
+  * timeout          (O) stop sending items after their age exceeds timeout
+                         in seconds (default '0' indicating no timeout).
+
+  Key attributes:
+  * id               (M) unique string identification of this key.
+-->
+<RtDB2Configuration>
+  <Networks>
+    <Network loopback="false" send="true">
+      <MulticastAddress>224.16.32.188</MulticastAddress>
+      <MulticastPort>8011</MulticastPort>
+      <Interface>wlo1</Interface>
+      <Frequency>40</Frequency>
+    </Network>
+  </Networks>
+  <Databases>
+    <Database>
+      <KeyDefaults shared="true" period="1" phase="1" timeout="2.5"/>
+      <Keys>
+        <Key id="shared_key"/>
+        <Key id="local_key" shared="false"/>
+        <Key id="another_shared_key" shared="true"/>
+        <Key id="all_options_key" shared="true" period="2" phase="3" timeout="4.0"/>
+        <Key id="oid_key1" oid="1"/>
+        <Key id="oid_key15" oid="15"/>
+      </Keys>
+    </Database>
+  </Databases>
+</RtDB2Configuration>

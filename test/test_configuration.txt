@@ -48,3 +48,39 @@ Defaults:
 	Period: 1
 	Phase shift: 1
 
+=== Minimal configuration v2 ===
+	multiCastIP = 224.16.32.74
+	frequency   = 25
+	port        = 1234
+	compression = 1
+	loopback    = 0
+	send        = 1
+Associations between integer keys and string: 
+Specific key configurations: 
+Defaults:
+	Shared: 1
+	Period: 1
+	Phase shift: 0
+
+=== Extensive configuration v2 ===
+	multiCastIP = 224.16.32.188
+	frequency   = 40
+	port        = 8011
+	compression = 0
+	loopback    = 0
+	send        = 1
+Associations between integer keys and string: 
+	OID: 1, ID: OID_KEY1
+	OID: 15, ID: OID_KEY15
+Specific key configurations: 
+	Key: ALL_OPTIONS_KEY, shared: 1, period: 2, phase shift: 3
+	Key: ANOTHER_SHARED_KEY, shared: 1, period: 1, phase shift: 1
+	Key: LOCAL_KEY, shared: 0, period: 1, phase shift: 1
+	Key: OID_KEY1, shared: 1, period: 1, phase shift: 1
+	Key: OID_KEY15, shared: 1, period: 1, phase shift: 1
+	Key: SHARED_KEY, shared: 1, period: 1, phase shift: 1
+Defaults:
+	Shared: 1
+	Period: 1
+	Phase shift: 1
+
