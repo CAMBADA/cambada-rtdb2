@@ -21,6 +21,8 @@ This project uses some 3rd-party libraries:
 - zstd
 - LMDB
 - Msgpack
+- Xerces-c
+- xsdcxx
 
 ## Instructions
 
