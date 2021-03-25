@@ -1,0 +1,44 @@
+=== default context ===
+processType: dbclient
+rootPath: /tmp/rtdb2_storage
+configFileName: config/rtdb2_configuration.xml
+networkName: 
+databaseName: default
+
+=== default dbclient context ===
+processType: dbclient
+rootPath: /tmp/rtdb2_storage
+configFileName: config/rtdb2_configuration.xml
+networkName: 
+databaseName: default
+
+=== default comm context ===
+processType: comm
+rootPath: /tmp/rtdb2_storage
+configFileName: config/rtdb2_configuration.xml
+networkName: default
+databaseName: 
+
+=== comm context ===
+processType: comm
+rootPath: myrootpath
+configFileName: myconfig.xml
+networkName: mynetwork
+databaseName: 
+
+=== database not allowed for comm ===
+[WARNING] Database cannot be set on comm processes. Comm processes use database set in Network configuration.
+processType: comm
+rootPath: /tmp/rtdb2_storage
+configFileName: config/rtdb2_configuration.xml
+networkName: default
+databaseName: 
+
+=== network not allow for dbclient ===
+[WARNING] Network can only be set for comm processes
+processType: dbclient
+rootPath: /tmp/rtdb2_storage
+configFileName: config/rtdb2_configuration.xml
+networkName: 
+databaseName: default
+

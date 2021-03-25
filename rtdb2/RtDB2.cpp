@@ -42,11 +42,11 @@ void RtDB2::construct()
     }
 }
 
-RtDB2::RtDB2(int agentId, std::string const &path)
+RtDB2::RtDB2(int agentId, RtDB2Context context)
 :
     _agentId(agentId),
-    _path(path),
-    _configuration(),
+    _context(context),
+    _configuration(context),
     _compressor(NULL)
 {
     construct();
@@ -64,7 +64,7 @@ boost::shared_ptr<RtDB2Storage> RtDB2::getStorage(int agentId, bool isSync)
     if (!s->count(agentId))
     {
         s->insert(std::pair<int, boost::shared_ptr<RtDB2Storage> >(
-                agentId, boost::make_shared<RtDB2LMDB>(_path, createAgentName(agentId, isSync))));
+                agentId, boost::make_shared<RtDB2LMDB>(_context.getRootPath(), createAgentName(agentId, isSync))));
     }
     return s->at(agentId);
 }
@@ -419,7 +419,7 @@ int RtDB2::waitForPut(std::string const &key, int agentId)
     if(it == sync_.end())
     {
         it = sync_.insert(std::pair<int, boost::shared_ptr<RtDB2Storage> >(
-                agentId, boost::make_shared<RtDB2LMDB>(_path, createAgentName(agentId, true)))).first;
+                agentId, boost::make_shared<RtDB2LMDB>(_context.getRootPath(), createAgentName(agentId, true)))).first;
     }
     it->second->append_to_sync_list(key, syncPoint);
 

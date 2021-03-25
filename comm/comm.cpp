@@ -30,7 +30,8 @@
 bool globalShutdownFlag = false;
 
 
-Comm::Comm()
+Comm::Comm(RtDB2Context &context)
+: context_(context)
 {
     // retrieve agentId and settings
     agentId = 0;
@@ -39,14 +40,13 @@ Comm::Comm()
     {
         agentId = atoi(envc);
     }
-    settings = RtDB2(agentId).getConfiguration().get_communication_settings();
+    settings = RtDB2(agentId, context).getConfiguration().get_communication_settings();
     // setup signal handler for (somewhat) graceful shutdown
     if (signal(SIGINT, Comm::sigHandler) == SIG_ERR) 
     {
         throw std::runtime_error("Error while setting up signal handler");
     }
     _initialized = false;
-    dbPath = RTDB2_DEFAULT_PATH;
     _rtdb = NULL;
 }
 
@@ -60,7 +60,7 @@ void Comm::initialize()
         throw std::runtime_error("Failed to setup socket");
     }
     // setup RTDB
-    _rtdb = RtDB2Store::getInstance().getRtDB2(agentId, dbPath);
+    _rtdb = RtDB2Store::getInstance().getRtDB2(agentId, context_);
     _initialized = true;
 }
 
@@ -72,7 +72,7 @@ void Comm::printSettings()
 {
     std::cout << "Comm settings:" << std::endl;
     std::cout << "        agent = " << agentId << std::endl;
-    std::cout << " databasePath = " << dbPath << std::endl;
+    std::cout << " databasePath = " << context_.getRootPath() << std::endl;
     std::cout << "  multiCastIP = " << settings.multiCastIP << std::endl;
     std::cout << "    interface = " << _socket.getInterface() << std::endl;
     std::cout << "      address = " << _socket.getIpAddress() << std::endl;

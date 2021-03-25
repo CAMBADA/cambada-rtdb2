@@ -5,24 +5,42 @@
  *      Author: Jan Feitsma
  */
 
-
 #include "comm.hpp"
+#include "../../rtdb2/RtDB2Context.h"
+#include "boost/program_options.hpp"
 
+namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-    Comm c;
-    // configuration is managed via RtDB2Configuration XML parsing
+    std::string network;
+    std::string dbpath;
 
-    // provide options to overrule? for instance interface (wlo1, eth, ...)
-    // TODO: make nicer interface (argparse, but lightweight?)
-    if (argc > 1)
+    // Declare the supported options.
+    po::options_description desc("Allowed options");
+    desc.add_options()
+        ("help", "produce help message")
+        ("network", po::value<std::string>(&network)->default_value("default"), "network name")
+        ("dbpath", po::value<std::string>(&dbpath)->default_value(RTDB2_DEFAULT_PATH), "database storage directory");
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("help"))
     {
-        c.dbPath = argv[1];
+        std::cout << desc << "\n";
+        return 1;
     }
 
+    std::cout << "Starting network: " << network << std::endl;
+
+    RtDB2Context context = RtDB2Context::Builder(RtDB2ProcessType::comm)
+                               .withRootPath(dbpath)
+                               .withNetwork(network)
+                               .build();
+    Comm c(context);
     c.run();
 
     return 0;
 }
-

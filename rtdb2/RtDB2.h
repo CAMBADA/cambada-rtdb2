@@ -11,6 +11,7 @@
 #include <iostream>
 #include <semaphore.h>
 
+#include "RtDB2Context.h"
 #include "RtDB2Item.h"
 #include "RtDB2Definitions.h"
 #include "RtDB2ErrorCode.h"
@@ -38,7 +39,7 @@ class RtDB2
 
 public:
     // An RTDB instance is always associated to an agent ID.
-    RtDB2(int agentId, std::string const &path = RTDB2_DEFAULT_PATH);
+    RtDB2(int agentId, RtDB2Context context = RtDB2Context::Builder().build());
 
     // Put a value for associated agent ID.
     template <typename T>
@@ -79,7 +80,7 @@ public:
 
     // Configuration
     RtDB2Configuration const &getConfiguration() const;
-    std::string getPath() { return _path; }
+    std::string getPath() { return _context.getRootPath(); }
 
     // Temporary functions to compress/decompress, for use in stimulator / logger -- TODO: refactor all of it into this rtdb package
     void compress(std::string &s);
@@ -99,7 +100,7 @@ private:
 
     // Datamembers
     const int                          _agentId;
-    std::string                        _path;
+    RtDB2Context                       _context;
     RtDB2Configuration                 _configuration;
     boost::shared_ptr<RtDB2Compressor> _compressor;
 
@@ -197,7 +198,7 @@ int RtDB2::putCore(std::string const &key, T *value, int agentId)
     if(it == sync_.end())
     {
         it = sync_.insert(std::pair<int, boost::shared_ptr<RtDB2Storage> >(
-                agentId, boost::make_shared<RtDB2LMDB>(_path, createAgentName(agentId, true)))).first;
+                agentId, boost::make_shared<RtDB2LMDB>(_context.getRootPath(), createAgentName(agentId, true)))).first;
     }
 
     if(it != sync_.end())

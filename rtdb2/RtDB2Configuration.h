@@ -3,6 +3,7 @@
 
 #include <map>
 
+#include "RtDB2Context.h"
 #include "RtDB2Definitions.h"
 
 struct KeyDetail {
@@ -37,10 +38,9 @@ struct CommunicationSettings
 class RtDB2Configuration
 {
 public:
-    RtDB2Configuration(const std::string &database = "default", const std::string &network = "default");
+    RtDB2Configuration(const RtDB2Context &context);
 
     void load_configuration();
-    int parse_configuration(std::string file_path = RTDB2_CONFIGURATION_FILE);
     const KeyDetail &get_key_default() const;
     const KeyDetail &get_key_details(const std::string &id) const;
     const KeyDetail &get_key_details(const int &oid) const;
@@ -51,9 +51,11 @@ public:
     friend std::ostream &operator<<(std::ostream &os, RtDB2Configuration &obj);
 
 private:
+    int parse_configuration(std::string file_path);
     void associate_keys_int_string(int oid, std::string id);
     void insert_key_detail(std::string id, KeyDetail detail);
 
+    RtDB2Context context_;
     std::string database_;
     std::string network_;
     std::map<std::string, KeyDetail> keys_details_;

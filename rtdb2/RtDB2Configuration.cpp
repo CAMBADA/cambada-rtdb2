@@ -6,27 +6,20 @@
 
 std::string to_upper(const std::string &s);
 
-RtDB2Configuration::RtDB2Configuration(const std::string &database, const std::string &network)
-    : database_(database), network_(network)
+RtDB2Configuration::RtDB2Configuration(const RtDB2Context &context)
+    : context_(context)
 {
+    database_ = context_.getDatabaseName();
+    network_ = context_.getNetworkName();
 }
 
 void RtDB2Configuration::load_configuration()
 {
-    std::string configuration_path = "";
-    char *cp = NULL;
-    if ((cp = getenv("RTDB_CONFIG_PATH")) != NULL)
-    {
-        configuration_path = cp;
-    }
-    else
-    {
-        throw std::runtime_error("Error while creating a configuration for the RTDB - No directory configured!");
-    }
-    std::string configuration_file = configuration_path + "/rtdb2_configuration.xml";
-    int error = parse_configuration(configuration_file);
+    int error = parse_configuration(context_.getConfigFileName());
     if (error != RTDB2_SUCCESS)
+    {
         throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse!");
+    }
 }
 
 int RtDB2Configuration::parse_configuration(std::string file_path)
@@ -48,6 +41,7 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
         // parse v2 style
         if (config->Networks().present() && network_.compare("") != 0)
         {
+            std::cout << "[INFO] Loading network named: " << network_ << std::endl;
             parsed = true;
             bool found = false;
             for (rtdbconfig::Networks::Network_const_iterator network(config->Networks().get().Network().begin());
@@ -81,6 +75,11 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                         compressor_settings_.use_dictionary = network->Compression().get().UseDictionary();
                     }
                     found = true;
+                    if (database_.compare("") != 0 && database_.compare(network->database()) != 0)
+                    {
+                        std::cout << "[WARNING] Ignoring requested database named: " << database_ << std::endl;
+                    }
+                    database_ = network->database();
                     break;
                 }
             }
@@ -92,6 +91,7 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
         }
         if (config->Databases().present() && database_.compare("") != 0)
         {
+            std::cout << "[INFO] Loading database named: " << database_ << std::endl;
             parsed = true;
             bool found = false;
             for (rtdbconfig::Databases::Database_const_iterator database(config->Databases().get().Database().begin());
@@ -135,10 +135,13 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
         if (!parsed)
         {
             // parse v1 style
-            if (network_.compare("default") != 0 || database_.compare("default") != 0)
+            if (context_.getProcessType() == RtDB2ProcessType::comm && network_.compare("default") != 0) {
+                std::cerr << "[ERROR] Network named '" << network_  << "' not found in: " << file_path << std::endl;
+                return RTDB2_FAILED_PARSING_CONFIG_FILE;
+            }
+            if (context_.getProcessType() == RtDB2ProcessType::dbclient && database_.compare("default") != 0)
             {
-                std::cerr << "[ERROR] Network named '" << network_ << "' and Database named '"
-                          << database_ << "' not found in: " << file_path << std::endl;
+                std::cerr << "[ERROR] Database named '" << database_ << "' not found in: " << file_path << std::endl;
                 return RTDB2_FAILED_PARSING_CONFIG_FILE;
             }
 

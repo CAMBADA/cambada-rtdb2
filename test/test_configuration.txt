@@ -48,7 +48,8 @@ Defaults:
 	Period: 1
 	Phase shift: 1
 
-=== Minimal configuration v2 ===
+=== config/minimal_configuration_v2.xml ===
+[INFO] Loading network named: default
 	multiCastIP = 224.16.32.74
 	frequency   = 25
 	port        = 1234
@@ -62,7 +63,9 @@ Defaults:
 	Period: 1
 	Phase shift: 0
 
-=== Extensive configuration v2 ===
+=== config/extensive_configuration_v2.xml ===
+[INFO] Loading network named: default
+[INFO] Loading database named: default
 	multiCastIP = 224.16.32.188
 	frequency   = 40
 	port        = 8011
