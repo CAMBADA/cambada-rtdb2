@@ -9,6 +9,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 add_executable(demo_basics demo_basics.cpp)
 target_link_libraries(demo_basics rtdb2)
 
+add_executable(test_clients test_clients.cpp)
+target_link_libraries(test_clients RtDBcomm rtdb2)
+
 add_executable(test_configuration test_configuration.cpp)
 target_link_libraries(test_configuration rtdb2)
 
