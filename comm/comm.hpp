@@ -27,7 +27,10 @@ public:
     Comm(int agent, RtDB2Context &context);
     ~Comm();
     
-    void run();
+    boost::thread start() {
+        return boost::thread(&Comm::run, this);
+    }
+    static void shutdown();
 
     // public properties, overridable until initialize() is called
     RtDB2Context          context_;
@@ -44,6 +47,8 @@ private:
     RtDB2                *_rtdb = NULL;
     int                   _counter = 0;
     
+    void run();
+
     // singular operations
     void receive();
     void transmit();

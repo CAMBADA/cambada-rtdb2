@@ -285,3 +285,7 @@ void Comm::insertHeader(std::string &buffer, FrameHeader const &header)
     }
 }
 
+void Comm::shutdown()
+{
+    globalShutdownFlag = true;
+}

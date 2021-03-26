@@ -47,7 +47,7 @@ int main(int argc, char **argv)
                                .withNetwork(network)
                                .build();
     Comm c(agent, context);
-    c.run();
+    c.start().join();
 
     return 0;
 }
