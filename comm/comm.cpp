@@ -72,7 +72,6 @@ void Comm::printSettings()
     std::cout << "      address = " << _socket.getIpAddress() << std::endl;
     std::cout << "    frequency = " << settings.frequency << std::endl;
     std::cout << "         port = " << settings.port << std::endl;
-    std::cout << "  compression = " << settings.compression << std::endl;
     std::cout << "     loopback = " << settings.loopback << std::endl;
     std::cout << "         send = " << settings.send << std::endl;
 }

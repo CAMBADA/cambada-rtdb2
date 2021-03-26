@@ -10,7 +10,7 @@
      * interface       (optional)  interface overrule, 'auto' (default) will resolve to available wireless adapter
      * frequency       (mandatory) transmitter frequency (Hz)
      * port            (mandatory) port to use
-     * compression     (mandatory) boolean flag to enable compression
+     * compression     (optional)  deprecated
      * loopback        (optional)  whether or not to receive own messages (default 'false')
      -->
 
@@ -18,7 +18,7 @@
   <General>
     <DefaultKeyValue/>
     <Compressor/>
-    <Communication multiCastIP="224.16.32.74" frequency="25" port="1234" compression="true"/>
+    <Communication multiCastIP="224.16.32.74" frequency="25" port="1234"/>
   </General>
 </RtDB2Configuration>
 

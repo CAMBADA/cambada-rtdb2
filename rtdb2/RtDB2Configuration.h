@@ -30,7 +30,6 @@ struct CommunicationSettings
     std::string interface = "auto";
     int port = 8001;
     float frequency = 30;
-    bool compression = false;
     bool loopback = false;
     bool send = true;
 };

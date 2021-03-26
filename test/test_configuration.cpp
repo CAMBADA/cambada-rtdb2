@@ -7,7 +7,6 @@ void print_comm_settings(RtDB2Configuration &config)
     std::cout << "\tmultiCastIP = " << cs.multiCastIP << std::endl;
     std::cout << "\tfrequency   = " << cs.frequency << std::endl;
     std::cout << "\tport        = " << cs.port << std::endl;
-    std::cout << "\tcompression = " << cs.compression << std::endl;
     std::cout << "\tloopback    = " << cs.loopback << std::endl;
     std::cout << "\tsend        = " << cs.send << std::endl;
 }

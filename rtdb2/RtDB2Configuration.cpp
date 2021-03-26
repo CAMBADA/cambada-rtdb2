@@ -85,7 +85,6 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                     // Compression
                     if (database->Compression().present())
                     {
-                        communication_settings_.compression = true;
                         switch (database->Compression().get().type())
                         {
                         case rtdbconfig::compressorType::zstd:
@@ -154,7 +153,6 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
             {
                 rtdbconfig::General general = config->General().get();
                 communication_settings_.multiCastIP = general.Communication().multiCastIP();
-                communication_settings_.compression = general.Communication().compression();
                 communication_settings_.frequency = general.Communication().frequency();
                 communication_settings_.interface = general.Communication().interface();
                 communication_settings_.loopback = general.Communication().loopback();
