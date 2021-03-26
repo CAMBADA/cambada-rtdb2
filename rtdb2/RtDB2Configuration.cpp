@@ -83,6 +83,7 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                 if (database->name().compare(database_) == 0)
                 {
                     // Compression
+                    compressor_settings_.use_dictionary = false;
                     if (database->Compression().present())
                     {
                         switch (database->Compression().get().type())
