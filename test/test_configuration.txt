@@ -53,7 +53,7 @@ Defaults:
 	multiCastIP = 224.16.32.74
 	frequency   = 25
 	port        = 1234
-	compression = 1
+	compression = 0
 	loopback    = 0
 	send        = 1
 Associations between integer keys and string: 
@@ -69,7 +69,7 @@ Defaults:
 	multiCastIP = 224.16.32.188
 	frequency   = 40
 	port        = 8011
-	compression = 0
+	compression = 1
 	loopback    = 0
 	send        = 1
 Associations between integer keys and string: 

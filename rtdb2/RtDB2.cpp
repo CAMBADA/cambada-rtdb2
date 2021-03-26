@@ -46,7 +46,7 @@ RtDB2::RtDB2(int agentId, RtDB2Context context)
 :
     _agentId(agentId),
     _context(context),
-    _configuration(context),
+    _configuration(RtDB2Configuration(context)),
     _compressor(NULL)
 {
     construct();

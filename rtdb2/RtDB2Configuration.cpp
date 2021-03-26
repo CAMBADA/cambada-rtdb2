@@ -57,23 +57,6 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                     communication_settings_.port = network->MulticastPort();
                     communication_settings_.send = network->send();
 
-                    if (network->Compression().present())
-                    {
-                        communication_settings_.compression = true;
-                        switch (network->Compression().get().type())
-                        {
-                        case rtdbconfig::compressorType::zstd:
-                            compressor_settings_.name = "zstd";
-                            break;
-                        case rtdbconfig::compressorType::lz4:
-                            compressor_settings_.name = "lz4";
-                            break;
-                        default:
-                            std::cerr << "[WARNING] Unsupported compressor type: " << network->Compression().get().type() << std::endl;
-                            compressor_settings_.name = "zstd";
-                        }
-                        compressor_settings_.use_dictionary = network->Compression().get().UseDictionary();
-                    }
                     found = true;
                     if (database_.compare("") != 0 && database_.compare(network->database()) != 0)
                     {
@@ -99,6 +82,27 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
             {
                 if (database->name().compare(database_) == 0)
                 {
+                    // Compression
+                    if (database->Compression().present())
+                    {
+                        communication_settings_.compression = true;
+                        switch (database->Compression().get().type())
+                        {
+                        case rtdbconfig::compressorType::zstd:
+                            compressor_settings_.name = "zstd";
+                            break;
+                        case rtdbconfig::compressorType::lz4:
+                            compressor_settings_.name = "lz4";
+                            break;
+                        default:
+                            std::cerr << "[WARNING] Unsupported compressor type: " << database->Compression().get().type() << std::endl;
+                            compressor_settings_.name = "zstd";
+                        }
+                        compressor_settings_.use_dictionary = database->Compression().get().UseDictionary().present()
+                                                                  ? database->Compression().get().UseDictionary().get()
+                                                                  : false;
+                    }
+
                     // DefaultKeyValue
                     bool present = database->KeyDefaults().present();
                     default_details_.period = present ? database->KeyDefaults().get().period() : rtdbconfig::keyDefaultsType::period_default_value();
@@ -135,8 +139,9 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
         if (!parsed)
         {
             // parse v1 style
-            if (context_.getProcessType() == RtDB2ProcessType::comm && network_.compare("default") != 0) {
-                std::cerr << "[ERROR] Network named '" << network_  << "' not found in: " << file_path << std::endl;
+            if (context_.getProcessType() == RtDB2ProcessType::comm && network_.compare("default") != 0)
+            {
+                std::cerr << "[ERROR] Network named '" << network_ << "' not found in: " << file_path << std::endl;
                 return RTDB2_FAILED_PARSING_CONFIG_FILE;
             }
             if (context_.getProcessType() == RtDB2ProcessType::dbclient && database_.compare("default") != 0)

@@ -22,12 +22,6 @@
   * Interface        (O) interface overrule, 'auto' (default) will resolve to
                          available wireless adapter
   * Frequency        (M) transmitter frequency (Hz)
-  * Compression      (O) enables compression
-
-  Compression attributes:
-  * type             (O) type of compression: 'zstd' or 'lz4' (default: 'zstd')
-  Compression elements:
-  * UseDictionary    (O) enables use of dictionary
 
   Databases
   =========
@@ -38,9 +32,15 @@
   * name             (O) unique name of the Network (default 'default')
 
   Database elements:
+  * Compression      (O) enables compression
   * KeyDefaults      (O) specifies the default values for the Key attributes for
                          this database. when omitted the system defaults are used.
   * Keys             (M) specifies the keys for this database.
+
+  Compression attributes:
+  * type             (O) type of compression: 'zstd' or 'lz4' (default: 'zstd')
+  Compression elements:
+  * UseDictionary    (O) enables use of dictionary
 
   Key/KeyDefaults attributes:
   * shared           (O) specifies if the object is shared or local to
@@ -61,7 +61,6 @@
       <MulticastAddress>224.16.32.74</MulticastAddress>
       <MulticastPort>1234</MulticastPort>
       <Frequency>25</Frequency>
-      <Compression/>
     </Network>
   </Networks>
 </RtDB2Configuration>

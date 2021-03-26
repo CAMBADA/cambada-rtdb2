@@ -56,6 +56,13 @@
       </xs:choice>
       </xs:complexType>
 
+      <xs:complexType name="compressionType">
+            <xs:sequence>
+                  <xs:element name="UseDictionary" type="xs:boolean" minOccurs="0"></xs:element>
+            </xs:sequence>
+            <xs:attribute name="type" type="compressorType" default="zstd"></xs:attribute>
+      </xs:complexType>
+
       <xs:simpleType name="compressorType">
             <xs:restriction base="xs:string">
                   <xs:enumeration value="zstd"/>
@@ -65,6 +72,7 @@
 
       <xs:complexType name="databaseType">
             <xs:sequence>
+                  <xs:element name="Compression" type="compressionType" minOccurs="0"/>
                   <xs:element name="KeyDefaults" type="keyDefaultsType" minOccurs="0"/>
                   <xs:element name="Keys">
                         <xs:complexType>
@@ -99,14 +107,6 @@
                   <xs:element name="MulticastPort" type="xs:int"></xs:element>
                   <xs:element name="Interface" type="xs:string" minOccurs="0"></xs:element>
                   <xs:element name="Frequency" type="xs:int"></xs:element>
-                  <xs:element name="Compression" minOccurs="0">
-                        <xs:complexType>
-                              <xs:sequence>
-                                    <xs:element name="UseDictionary" type="xs:boolean" minOccurs="0"></xs:element>
-                              </xs:sequence>
-                              <xs:attribute name="type" type="compressorType" default="zstd"></xs:attribute>
-                        </xs:complexType>
-                  </xs:element>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string" default="default"></xs:attribute>
             <xs:attribute name="database" type="xs:string" default="default"></xs:attribute>
