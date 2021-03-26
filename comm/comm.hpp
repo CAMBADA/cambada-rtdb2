@@ -24,7 +24,7 @@
 class Comm
 {
 public:
-    Comm(RtDB2Context &context);
+    Comm(int agent, RtDB2Context &context);
     ~Comm();
     
     void run();

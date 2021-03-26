@@ -30,16 +30,10 @@
 bool globalShutdownFlag = false;
 
 
-Comm::Comm(RtDB2Context &context)
-: context_(context)
+Comm::Comm(int agent, RtDB2Context &context)
+: context_(context), agentId(agent)
 {
-    // retrieve agentId and settings
-    agentId = 0;
-    char *envc = NULL;
-    if ((envc = getenv("AGENT")) != NULL) 
-    {
-        agentId = atoi(envc);
-    }
+    // retrieve settings
     settings = RtDB2(agentId, context).getConfiguration().get_communication_settings();
     // setup signal handler for (somewhat) graceful shutdown
     if (signal(SIGINT, Comm::sigHandler) == SIG_ERR) 

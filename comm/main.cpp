@@ -13,6 +13,7 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
+    int agent;
     std::string network;
     std::string dbpath;
 
@@ -20,6 +21,7 @@ int main(int argc, char **argv)
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help", "produce help message")
+        ("agent", po::value<int>(&agent)->default_value(-1), "agent")
         ("network", po::value<std::string>(&network)->default_value("default"), "network name")
         ("dbpath", po::value<std::string>(&dbpath)->default_value(RTDB2_DEFAULT_PATH), "database storage directory");
 
@@ -33,13 +35,18 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    if (agent < 0) {
+        char *envc = getenv("AGENT");
+        agent = envc == NULL ? 0 : atoi(envc);
+    }
+
     std::cout << "Starting network: " << network << std::endl;
 
     RtDB2Context context = RtDB2Context::Builder(RtDB2ProcessType::comm)
                                .withRootPath(dbpath)
                                .withNetwork(network)
                                .build();
-    Comm c(context);
+    Comm c(agent, context);
     c.run();
 
     return 0;
