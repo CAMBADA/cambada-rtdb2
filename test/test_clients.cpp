@@ -28,7 +28,7 @@ void startComm(int agent, std::string const &network, std::string const &configF
                                 .withConfigFileName(configFile)
                                 .withNetwork(network)
                                 .build();
-    Comm* comm = new Comm(agent, ctx);
+    Comm* comm = new Comm(ctx);
     threads.push_back(comm->start());
 }
 

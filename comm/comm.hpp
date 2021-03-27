@@ -24,7 +24,7 @@
 class Comm
 {
 public:
-    Comm(int agent, RtDB2Context &context);
+    Comm(RtDB2Context const &context);
     ~Comm();
     
     boost::thread start() {

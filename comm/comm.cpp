@@ -30,8 +30,8 @@
 bool globalShutdownFlag = false;
 
 
-Comm::Comm(int agent, RtDB2Context &context)
-: context_(context), agentId(agent)
+Comm::Comm(RtDB2Context const &context)
+: context_(context), agentId(context.getAgentId())
 {
     // retrieve settings
     settings = context_.getConfiguration().get_communication_settings();

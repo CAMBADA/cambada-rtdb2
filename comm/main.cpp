@@ -46,7 +46,7 @@ int main(int argc, char **argv)
                                .withRootPath(dbpath)
                                .withNetwork(network)
                                .build();
-    Comm c(agent, context);
+    Comm c(context);
     c.start().join();
 
     return 0;
