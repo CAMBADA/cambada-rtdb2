@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
     std::cout << "Starting network: " << network << std::endl;
 
-    RtDB2Context context = RtDB2Context::Builder(RtDB2ProcessType::comm)
+    RtDB2Context context = RtDB2Context::Builder(agent, RtDB2ProcessType::comm)
                                .withRootPath(dbpath)
                                .withNetwork(network)
                                .build();

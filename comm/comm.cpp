@@ -65,8 +65,8 @@ Comm::~Comm()
 void Comm::printSettings()
 {
     std::cout << "Comm settings:" << std::endl;
-    std::cout << "        agent = " << agentId << std::endl;
-    std::cout << " databasePath = " << context_.getRootPath() << std::endl;
+    std::cout << "           me = " << agentId << std::endl;
+    std::cout << " databasePath = " << context_.getDatabasePath() << std::endl;
     std::cout << "  multiCastIP = " << settings.multiCastIP << std::endl;
     std::cout << "    interface = " << _socket.getInterface() << std::endl;
     std::cout << "      address = " << _socket.getIpAddress() << std::endl;

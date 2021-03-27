@@ -3,8 +3,6 @@
 #include "RtDB2.h"
 #include "../comm/comm.hpp"
 
-#define ROOTPATH1 RTDB2_DEFAULT_PATH "/comm1"
-#define ROOTPATH2 RTDB2_DEFAULT_PATH "/comm2"
 #define CONFIGFILE "/config/test_clients.xml"
 
 // Simulates two clients sharing their database with the other client.
@@ -27,45 +25,41 @@ int main(int argc, char **argv)
     std::cout << "Using configuration file: " << configFileName << std::endl;
 
     // setup comm for client 1
-    RtDB2Context ctxComm1 = RtDB2Context::Builder(RtDB2ProcessType::comm)
-                               .withConfigFileName(configFileName)
-                               .withRootPath(ROOTPATH1)
-                               .build();
+    RtDB2Context ctxComm1 = RtDB2Context::Builder(1, RtDB2ProcessType::comm)
+                                .withConfigFileName(configFileName)
+                                .build();
     Comm comm1(1, ctxComm1);
     boost::thread t1 = comm1.start();
 
     sleep(1); // configuration is not multi-thread safe
 
     // setup comm for client 2
-    RtDB2Context ctxComm2 = RtDB2Context::Builder(RtDB2ProcessType::comm)
-                               .withConfigFileName(configFileName)
-                               .withRootPath(ROOTPATH2)
-                               .build();
+    RtDB2Context ctxComm2 = RtDB2Context::Builder(2, RtDB2ProcessType::comm)
+                                .withConfigFileName(configFileName)
+                                .build();
     Comm comm2(2, ctxComm2);
     boost::thread t2 = comm2.start();
 
     sleep(1); // configuration is not multi-thread safe
 
     // client 1
-    RtDB2Context ctxNode1 = RtDB2Context::Builder()
-                               .withConfigFileName(configFileName)
-                               .withRootPath(ROOTPATH1)
-                               .build();
-    RtDB2 rtdbNode1Client1RW(1, ctxNode1);
-    RtDB2 rtdbNode1Client2R (2, ctxNode1);
+    RtDB2Context ctxNode1 = RtDB2Context::Builder(1)
+                                .withConfigFileName(configFileName)
+                                .build();
+    RtDB2 rtdbNode1Client1RW(ctxNode1, 1);
+    RtDB2 rtdbNode1Client2R(ctxNode1, 2);
 
     sleep(1); // configuration is not multi-thread safe
 
     // client 2
-    RtDB2Context ctxNode2 = RtDB2Context::Builder()
-                               .withConfigFileName(configFileName)
-                               .withRootPath(ROOTPATH2)
-                               .build();
-    RtDB2 rtdbNode2Client1R (1, ctxNode2);
-    RtDB2 rtdbNode2Client2RW(2, ctxNode2);
+    RtDB2Context ctxNode2 = RtDB2Context::Builder(2)
+                                .withConfigFileName(configFileName)
+                                .build();
+    RtDB2 rtdbNode2Client1R(ctxNode2, 1);
+    RtDB2 rtdbNode2Client2RW(ctxNode2, 2);
 
     // rtdb
-    srand (time(NULL));
+    srand(time(NULL));
     const std::string key = "EXAMPLE_ITEM";
     int value;
     int result;

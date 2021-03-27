@@ -15,14 +15,14 @@ void print_configuration(const RtDB2Configuration &config)
 int main(int argc, char **argv)
 {
     std::cout << "=== Default configuration ===" << std::endl;
-    RtDB2Context defaultContext = RtDB2Context::Builder().build();
+    RtDB2Context defaultContext = RtDB2Context::Builder(0).build();
     print_configuration(defaultContext.getConfiguration());
 
     for (int i = 1; i < argc; i++)
     {
         std::string configFile = argv[i];
         std::cout << "=== " << configFile << " ===" << std::endl;
-        RtDB2Context context = RtDB2Context::Builder(RtDB2ProcessType::comm)
+        RtDB2Context context = RtDB2Context::Builder(0, RtDB2ProcessType::comm)
                                    .withConfigFileName(configFile)
                                    .build();
         print_configuration(context.getConfiguration());

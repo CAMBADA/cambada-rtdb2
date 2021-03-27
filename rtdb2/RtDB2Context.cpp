@@ -13,12 +13,18 @@ std::string RtDB2Context::defaultConfigFileName()
 }
 
 RtDB2Context::RtDB2Context(
+    int agent,
     RtDB2ProcessType const &processType,
     std::string const &rootPath,
     std::string const &configFileName,
     RtDB2Configuration const &configuration)
-    : _processType(processType), _rootPath(rootPath), _configFileName(configFileName), _configuration(configuration)
+    : _agent(agent), _processType(processType), _rootPath(rootPath), _configFileName(configFileName), _configuration(configuration)
 {
+}
+
+int RtDB2Context::getAgentId() const
+{
+    return _agent;
 }
 
 std::string RtDB2Context::getConfigFileName() const
@@ -46,24 +52,27 @@ RtDB2ProcessType RtDB2Context::getProcessType() const
     return _processType;
 }
 
-std::string RtDB2Context::getRootPath() const
+std::string RtDB2Context::getDatabasePath() const
 {
-    return _rootPath;
+    return _rootPath + '/' + std::to_string(_agent) + '/' + _configuration.get_database_name();
 }
 
 std::ostream &RtDB2Context::toStream(std::ostream &os) const
 {
+    os << "me: " << std::to_string(_agent) << std::endl;
     os << "processType: " << toString(_processType) << std::endl;
     os << "rootPath: " << _rootPath << std::endl;
     os << "configFileName: " << _configFileName << std::endl;
     os << "networkName: " << getNetworkName() << std::endl;
     os << "databaseName: " << getDatabaseName() << std::endl;
+    os << "databasePath: " << getDatabasePath() << std::endl;
     return os;
 }
 
 // --- Builder ---
 
-RtDB2Context::Builder::Builder(RtDB2ProcessType processType)
+RtDB2Context::Builder::Builder(int agent, RtDB2ProcessType processType)
+    : _agent(agent)
 {
     _processType = processType;
     _configFileName = defaultConfigFileName();
@@ -115,5 +124,5 @@ RtDB2Context RtDB2Context::Builder::build() const
     std::string netw = _processType == RtDB2ProcessType::dbclient ? "" : _networkName;
     RtDB2Configuration configuration(_configFileName, _processType, db, netw);
     configuration.load_configuration();
-    return RtDB2Context(_processType, _rootPath, _configFileName, configuration);
+    return RtDB2Context(_agent, _processType, _rootPath, _configFileName, configuration);
 }
