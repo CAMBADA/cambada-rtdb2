@@ -3,12 +3,7 @@
 
 #include <string>
 #include "RtDB2Definitions.h"
-
-enum RtDB2ProcessType
-{
-    comm,
-    dbclient
-};
+#include "RtDB2Configuration.h"
 
 inline const char *toString(RtDB2ProcessType t)
 {
@@ -29,34 +24,36 @@ public:
     class Builder;
 
     RtDB2ProcessType getProcessType();
+    const RtDB2Configuration &getConfiguration();
     std::string getConfigFileName();
     std::string getNetworkName();
     std::string getDatabaseName();
     std::string getRootPath();
 
-    friend std::ostream& operator<<(std::ostream& os, RtDB2Context& ctx);
+    friend std::ostream& operator<<(std::ostream& os, const RtDB2Context& ctx);
 
     static std::string defaultConfigFileName();
 
 private:
     RtDB2Context(
-        RtDB2ProcessType processType,
+        RtDB2ProcessType const &processType,
         std::string const &networkName,
         std::string const &databaseName,
         std::string const &rootPath,
-        std::string const &configFileName);
+        std::string const &configFileName,
+        RtDB2Configuration const &configuration);
 
-    std::ostream& toStream(std::ostream&);
+    std::ostream& toStream(std::ostream&) const;
 
     RtDB2ProcessType _processType;
     std::string _networkName;
     std::string _databaseName;
     std::string _rootPath;
     std::string _configFileName;
-
+    RtDB2Configuration _configuration;
 };
 
-inline std::ostream& operator<<(std::ostream& os, RtDB2Context& ctx) {
+inline std::ostream& operator<<(std::ostream& os, const RtDB2Context& ctx) {
     ctx.toStream(os);
     return os;
 }

@@ -79,7 +79,6 @@ public:
     int getAndClear(std::string const &key, T *value);
 
     // Configuration
-    RtDB2Configuration const &getConfiguration() const;
     std::string getPath() { return _context.getRootPath(); }
 
     // Temporary functions to compress/decompress, for use in stimulator / logger -- TODO: refactor all of it into this rtdb package
@@ -101,7 +100,6 @@ private:
     // Datamembers
     const int                          _agentId;
     RtDB2Context                       _context;
-    RtDB2Configuration                 _configuration;
     boost::shared_ptr<RtDB2Compressor> _compressor;
 
     // Storage

@@ -6,16 +6,18 @@
 
 std::string to_upper(const std::string &s);
 
-RtDB2Configuration::RtDB2Configuration(const RtDB2Context &context)
-    : context_(context)
+RtDB2Configuration::RtDB2Configuration(
+    const std::string &configFile,
+    const RtDB2ProcessType &processType,
+    const std::string &database,
+    const std::string &network)
+    : configFile_(configFile), processType_(processType), database_(database), network_(network)
 {
-    database_ = context_.getDatabaseName();
-    network_ = context_.getNetworkName();
 }
 
 void RtDB2Configuration::load_configuration()
 {
-    int error = parse_configuration(context_.getConfigFileName());
+    int error = parse_configuration(configFile_);
     if (error != RTDB2_SUCCESS)
     {
         throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse!");
@@ -139,12 +141,12 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
         if (!parsed)
         {
             // parse v1 style
-            if (context_.getProcessType() == RtDB2ProcessType::comm && network_.compare("default") != 0)
+            if (processType_ == RtDB2ProcessType::comm && network_.compare("default") != 0)
             {
                 std::cerr << "[ERROR] Network named '" << network_ << "' not found in: " << file_path << std::endl;
                 return RTDB2_FAILED_PARSING_CONFIG_FILE;
             }
-            if (context_.getProcessType() == RtDB2ProcessType::dbclient && database_.compare("default") != 0)
+            if (processType_ == RtDB2ProcessType::dbclient && database_.compare("default") != 0)
             {
                 std::cerr << "[ERROR] Database named '" << database_ << "' not found in: " << file_path << std::endl;
                 return RTDB2_FAILED_PARSING_CONFIG_FILE;
@@ -226,16 +228,16 @@ const KeyDetail &RtDB2Configuration::get_key_default() const
     return default_details_;
 }
 
-std::ostream &operator<<(std::ostream &os, RtDB2Configuration &obj)
+std::ostream &operator<<(std::ostream &os, const RtDB2Configuration &obj)
 {
     os << "Associations between integer keys and string: " << std::endl;
-    for (std::map<int, std::string>::iterator it = obj.reverse_key_map_.begin();
+    for (std::map<int, std::string>::const_iterator it = obj.reverse_key_map_.begin();
          it != obj.reverse_key_map_.end(); ++it)
     {
         os << "\tOID: " << it->first << ", ID: " << it->second << std::endl;
     }
     os << "Specific key configurations: " << std::endl;
-    for (std::map<std::string, KeyDetail>::iterator it = obj.keys_details_.begin();
+    for (std::map<std::string, KeyDetail>::const_iterator it = obj.keys_details_.begin();
          it != obj.keys_details_.end(); ++it)
     {
         os << "\tKey: " << it->first

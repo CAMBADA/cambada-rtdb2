@@ -1,4 +1,5 @@
 === Default configuration ===
+[INFO] Loading database named: default
 	multiCastIP = 
 	frequency   = 30
 	port        = 8001
@@ -6,8 +7,10 @@
 	send        = 1
 Associations between integer keys and string: 
 Specific key configurations: 
+	Key: EXAMPLE_ITEM, shared: 0, period: 1, phase shift: 0
+	Key: EXAMPLE_ITEM_MAPPED, shared: 0, period: 1, phase shift: 0
 Defaults:
-	Shared: 1
+	Shared: 0
 	Period: 1
 	Phase shift: 0
 

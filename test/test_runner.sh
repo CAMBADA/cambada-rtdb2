@@ -4,5 +4,5 @@ TESTBIN=$1
 shift;
 
 cd "$(dirname "$0")"
-./$TESTBIN $* | diff - $TESTBIN.txt
+./$TESTBIN $* | diff $TESTBIN.txt -
 

@@ -13,18 +13,24 @@ std::string RtDB2Context::defaultConfigFileName()
 }
 
 RtDB2Context::RtDB2Context(
-    RtDB2ProcessType processType,
+    RtDB2ProcessType const &processType,
     std::string const &networkName,
     std::string const &databaseName,
     std::string const &rootPath,
-    std::string const &configFileName)
-    : _processType(processType), _networkName(networkName), _databaseName(databaseName), _rootPath(rootPath), _configFileName(configFileName)
+    std::string const &configFileName,
+    RtDB2Configuration const &configuration)
+    : _processType(processType), _networkName(networkName), _databaseName(databaseName), _rootPath(rootPath), _configFileName(configFileName), _configuration(configuration)
 {
 }
 
 std::string RtDB2Context::getConfigFileName()
 {
     return _configFileName;
+}
+
+const RtDB2Configuration &RtDB2Context::getConfiguration()
+{
+    return _configuration;
 }
 
 std::string RtDB2Context::getNetworkName()
@@ -47,7 +53,7 @@ std::string RtDB2Context::getRootPath()
     return _rootPath;
 }
 
-std::ostream &RtDB2Context::toStream(std::ostream &os)
+std::ostream &RtDB2Context::toStream(std::ostream &os) const
 {
     os << "processType: " << toString(_processType) << std::endl;
     os << "rootPath: " << _rootPath << std::endl;
@@ -109,5 +115,7 @@ RtDB2Context RtDB2Context::Builder::build() const
     // process type comm extracts the database name from the network config
     std::string db = _processType == RtDB2ProcessType::comm ? "" : _databaseName;
     std::string netw = _processType == RtDB2ProcessType::dbclient ? "" : _networkName;
-    return RtDB2Context(_processType, netw, db, _rootPath, _configFileName);
+    RtDB2Configuration configuration(_configFileName, _processType, db, netw);
+    configuration.load_configuration();
+    return RtDB2Context(_processType, netw, db, _rootPath, _configFileName, configuration);
 }

@@ -13,9 +13,8 @@
 
 void RtDB2::construct()
 {
-    _configuration.load_configuration();
     // compressor
-    const CompressorSettings compressor_settings = _configuration.get_compressor_settings();
+    const CompressorSettings compressor_settings = _context.getConfiguration().get_compressor_settings();
     if (compressor_settings.name == "lz4")
     {
         _compressor = boost::make_shared<RtDB2CompressorLZ4>();
@@ -46,7 +45,6 @@ RtDB2::RtDB2(int agentId, RtDB2Context context)
 :
     _agentId(agentId),
     _context(context),
-    _configuration(RtDB2Configuration(context)),
     _compressor(NULL)
 {
     construct();
@@ -102,7 +100,7 @@ RtDB2Item RtDB2::makeItem(std::string const &key, int agentId, std::string const
     // it was considered to also make key and agentId part of item, but this was dropped after discussion with Ricardo due to data being redundant
     item.data = serialized_data;
     item.timestamp = rtime::now();
-    item.shared = _configuration.get_key_details(key).shared;
+    item.shared = _context.getConfiguration().get_key_details(key).shared;
     return item;
 }
 
@@ -295,7 +293,7 @@ int RtDB2::getFrame(RtDB2Frame &frame, RtDB2FrameSelection const &selection, int
         // check selection criteria
         if (errItem == RTDB2_SUCCESS)
         {
-            const KeyDetail& detail = _configuration.get_key_details(frameItem.key);
+            const KeyDetail& detail = _context.getConfiguration().get_key_details(frameItem.key);
             // locality attribute check
             if (keep)
             {
@@ -445,11 +443,6 @@ int RtDB2::waitForPut(std::string const &key, int agentId)
 
     rdebug("waitForPut end");
     return RTDB2_SUCCESS;
-}
-
-const RtDB2Configuration& RtDB2::getConfiguration() const
-{
-    return _configuration;
 }
 
 void RtDB2::compress(std::string &s)

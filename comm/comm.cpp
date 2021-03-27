@@ -34,7 +34,7 @@ Comm::Comm(int agent, RtDB2Context &context)
 : context_(context), agentId(agent)
 {
     // retrieve settings
-    settings = RtDB2(agentId, context).getConfiguration().get_communication_settings();
+    settings = context_.getConfiguration().get_communication_settings();
     // setup signal handler for (somewhat) graceful shutdown
     if (signal(SIGINT, Comm::sigHandler) == SIG_ERR) 
     {

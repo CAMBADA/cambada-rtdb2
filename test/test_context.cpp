@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 
     std::cout << "=== comm context ===" << std::endl;
     ctx = RtDB2Context::Builder(RtDB2ProcessType::comm)
-            .withConfigFileName("myconfig.xml")
+            .withConfigFileName("config/context_myconfig.xml")
             .withNetwork("mynetwork")
             .withRootPath("myrootpath")
             .build();

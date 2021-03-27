@@ -3,8 +3,13 @@
 
 #include <map>
 
-#include "RtDB2Context.h"
 #include "RtDB2Definitions.h"
+
+enum RtDB2ProcessType
+{
+    comm,
+    dbclient
+};
 
 struct KeyDetail {
     KeyDetail() : shared(true), period(1), phase_shift(0), timeout(1.0) {}
@@ -37,7 +42,11 @@ struct CommunicationSettings
 class RtDB2Configuration
 {
 public:
-    RtDB2Configuration(const RtDB2Context &context);
+    RtDB2Configuration(
+        std::string const &configFile,
+        RtDB2ProcessType const &processType,
+        std::string const &database,
+        std::string const &network);
 
     void load_configuration();
     const KeyDetail &get_key_default() const;
@@ -47,14 +56,15 @@ public:
     const CompressorSettings &get_compressor_settings() const;
     const CommunicationSettings &get_communication_settings() const;
 
-    friend std::ostream &operator<<(std::ostream &os, RtDB2Configuration &obj);
+    friend std::ostream &operator<<(std::ostream &os, const RtDB2Configuration &obj);
 
 private:
     int parse_configuration(std::string file_path);
     void associate_keys_int_string(int oid, std::string id);
     void insert_key_detail(std::string id, KeyDetail detail);
 
-    RtDB2Context context_;
+    std::string configFile_;
+    RtDB2ProcessType processType_;
     std::string database_;
     std::string network_;
     std::map<std::string, KeyDetail> keys_details_;

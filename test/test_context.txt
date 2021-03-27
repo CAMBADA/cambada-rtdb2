@@ -1,4 +1,5 @@
 === default context ===
+[INFO] Loading database named: default
 processType: dbclient
 rootPath: /tmp/rtdb2_storage
 configFileName: config/rtdb2_configuration.xml
@@ -6,6 +7,7 @@ networkName:
 databaseName: default
 
 === default dbclient context ===
+[INFO] Loading database named: default
 processType: dbclient
 rootPath: /tmp/rtdb2_storage
 configFileName: config/rtdb2_configuration.xml
@@ -13,6 +15,8 @@ networkName:
 databaseName: default
 
 === default comm context ===
+[INFO] Loading network named: default
+[INFO] Loading database named: default
 processType: comm
 rootPath: /tmp/rtdb2_storage
 configFileName: config/rtdb2_configuration.xml
@@ -20,14 +24,18 @@ networkName: default
 databaseName: 
 
 === comm context ===
+[INFO] Loading network named: mynetwork
+[INFO] Loading database named: mydatabase
 processType: comm
 rootPath: myrootpath
-configFileName: myconfig.xml
+configFileName: config/context_myconfig.xml
 networkName: mynetwork
 databaseName: 
 
 === database not allowed for comm ===
 [WARNING] Database cannot be set on comm processes. Comm processes use database set in Network configuration.
+[INFO] Loading network named: default
+[INFO] Loading database named: default
 processType: comm
 rootPath: /tmp/rtdb2_storage
 configFileName: config/rtdb2_configuration.xml
@@ -36,6 +44,7 @@ databaseName:
 
 === network not allow for dbclient ===
 [WARNING] Network can only be set for comm processes
+[INFO] Loading database named: default
 processType: dbclient
 rootPath: /tmp/rtdb2_storage
 configFileName: config/rtdb2_configuration.xml

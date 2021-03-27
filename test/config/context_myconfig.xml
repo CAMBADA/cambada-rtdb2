@@ -1,0 +1,20 @@
+<RtDB2Configuration>
+  <Networks>
+    <Network name="mynetwork" database="mydatabase" loopback="false" send="true">
+      <MulticastAddress>224.16.32.74</MulticastAddress>
+      <MulticastPort>8001</MulticastPort>
+      <Interface>auto</Interface>
+      <Frequency>30</Frequency>
+    </Network>
+  </Networks>
+  <Databases>
+    <Database name="mydatabase">
+      <Compression type="zstd"/>
+      <KeyDefaults shared="false" period="1" phase="0" timeout="1.0"/>
+      <Keys>
+        <Key id="EXAMPLE_ITEM"/>
+        <Key id="EXAMPLE_ITEM_MAPPED" shared="false"/>
+      </Keys>
+    </Database>
+  </Databases>
+</RtDB2Configuration>
