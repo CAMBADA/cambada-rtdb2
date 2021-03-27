@@ -30,7 +30,6 @@ void startComm(int agent, std::string const &network, std::string const &configF
                                 .build();
     Comm* comm = new Comm(agent, ctx);
     threads.push_back(comm->start());
-    usleep(250000); // configuration is not multi-thread safe
 }
 
 int main(int argc, char **argv)
@@ -61,7 +60,6 @@ int main(int argc, char **argv)
                                 .build();
     RtDB2 rtdbClient1DB1(ctxClient1DB1);
     RtDB2 rtdbClient1DB1Remote2(ctxClient1DB1, 2);
-    usleep(250000); // configuration is not multi-thread safe
 
     // client 1 - database 2
     RtDB2Context ctxClient1DB2 = RtDB2Context::Builder(1)
@@ -70,7 +68,6 @@ int main(int argc, char **argv)
                                 .build();
     RtDB2 rtdbClient1DB2(ctxClient1DB2);
     RtDB2 rtdbClient1DB2Remote3(ctxClient1DB2, 3);
-    usleep(250000); // configuration is not multi-thread safe
 
     // client 2 - database 1
     RtDB2Context ctxClient2DB1 = RtDB2Context::Builder(2)
@@ -79,7 +76,6 @@ int main(int argc, char **argv)
                                 .build();
     RtDB2 rtdbClient2DB1Remote1(ctxClient2DB1, 1);
     RtDB2 rtdbClient2DB1(ctxClient2DB1);
-    usleep(250000); // configuration is not multi-thread safe
 
     // client 3 - database 2
     RtDB2Context ctxClient3DB2 = RtDB2Context::Builder(3)
@@ -88,7 +84,6 @@ int main(int argc, char **argv)
                                 .build();
     RtDB2 rtdbClient3DB2Remote1(ctxClient3DB2, 1);
     RtDB2 rtdbClient3DB2(ctxClient3DB2);
-    usleep(250000); // configuration is not multi-thread safe
 
     // rtdb
     srand(time(NULL));

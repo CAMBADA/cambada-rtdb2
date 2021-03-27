@@ -3,7 +3,9 @@
 #include "rtdb_configuration_generated.h"
 
 #include <iostream>
+#include <mutex>
 
+std::mutex mtx;
 std::string to_upper(const std::string &s);
 
 RtDB2Configuration::RtDB2Configuration(
@@ -17,7 +19,9 @@ RtDB2Configuration::RtDB2Configuration(
 
 void RtDB2Configuration::load_configuration()
 {
+    mtx.lock();
     int error = parse_configuration(configFile_);
+    mtx.unlock();
     if (error != RTDB2_SUCCESS)
     {
         throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse!");
