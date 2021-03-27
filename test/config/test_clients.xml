@@ -57,18 +57,31 @@
 -->
 <RtDB2Configuration>
   <Networks>
-    <Network loopback="false" send="true">
+    <Network name="network-A" database="db1" loopback="false" send="true">
       <MulticastAddress>224.16.32.74</MulticastAddress>
       <MulticastPort>8001</MulticastPort>
       <Interface>lo</Interface>
       <Frequency>30</Frequency>
     </Network>
+    <Network name="network-B" database="db2" loopback="false" send="true">
+      <MulticastAddress>224.16.32.74</MulticastAddress>
+      <MulticastPort>8002</MulticastPort>
+      <Interface>lo</Interface>
+      <Frequency>30</Frequency>
+    </Network>
   </Networks>
   <Databases>
-    <Database>
+    <Database name="db1">
       <KeyDefaults shared="true" period="1" phase="0" timeout="1.0"/>
       <Keys>
-        <Key id="EXAMPLE_ITEM"/>
+        <Key id="DB1_ITEM"/>
+      </Keys>
+    </Database>
+    <Database name="db2">
+      <Compression name="lz4"/>
+      <KeyDefaults shared="true" period="1" phase="0" timeout="1.0"/>
+      <Keys>
+        <Key id="DB2_ITEM"/>
       </Keys>
     </Database>
   </Databases>
