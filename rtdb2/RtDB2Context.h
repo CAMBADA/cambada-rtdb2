@@ -23,12 +23,12 @@ class RtDB2Context
 public:
     class Builder;
 
-    RtDB2ProcessType getProcessType();
-    const RtDB2Configuration &getConfiguration();
-    std::string getConfigFileName();
-    std::string getNetworkName();
-    std::string getDatabaseName();
-    std::string getRootPath();
+    RtDB2ProcessType getProcessType() const;
+    const RtDB2Configuration &getConfiguration() const;
+    std::string getConfigFileName() const;
+    std::string getNetworkName() const;
+    std::string getDatabaseName() const;
+    std::string getRootPath() const;
 
     friend std::ostream& operator<<(std::ostream& os, const RtDB2Context& ctx);
 
@@ -37,8 +37,6 @@ public:
 private:
     RtDB2Context(
         RtDB2ProcessType const &processType,
-        std::string const &networkName,
-        std::string const &databaseName,
         std::string const &rootPath,
         std::string const &configFileName,
         RtDB2Configuration const &configuration);
@@ -46,8 +44,6 @@ private:
     std::ostream& toStream(std::ostream&) const;
 
     RtDB2ProcessType _processType;
-    std::string _networkName;
-    std::string _databaseName;
     std::string _rootPath;
     std::string _configFileName;
     RtDB2Configuration _configuration;

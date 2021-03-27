@@ -14,41 +14,39 @@ std::string RtDB2Context::defaultConfigFileName()
 
 RtDB2Context::RtDB2Context(
     RtDB2ProcessType const &processType,
-    std::string const &networkName,
-    std::string const &databaseName,
     std::string const &rootPath,
     std::string const &configFileName,
     RtDB2Configuration const &configuration)
-    : _processType(processType), _networkName(networkName), _databaseName(databaseName), _rootPath(rootPath), _configFileName(configFileName), _configuration(configuration)
+    : _processType(processType), _rootPath(rootPath), _configFileName(configFileName), _configuration(configuration)
 {
 }
 
-std::string RtDB2Context::getConfigFileName()
+std::string RtDB2Context::getConfigFileName() const
 {
     return _configFileName;
 }
 
-const RtDB2Configuration &RtDB2Context::getConfiguration()
+const RtDB2Configuration &RtDB2Context::getConfiguration() const
 {
     return _configuration;
 }
 
-std::string RtDB2Context::getNetworkName()
+std::string RtDB2Context::getNetworkName() const
 {
-    return _networkName;
+    return _configuration.get_network_name();
 }
 
-std::string RtDB2Context::getDatabaseName()
+std::string RtDB2Context::getDatabaseName() const
 {
-    return _databaseName;
+    return _configuration.get_database_name();
 }
 
-RtDB2ProcessType RtDB2Context::getProcessType()
+RtDB2ProcessType RtDB2Context::getProcessType() const
 {
     return _processType;
 }
 
-std::string RtDB2Context::getRootPath()
+std::string RtDB2Context::getRootPath() const
 {
     return _rootPath;
 }
@@ -58,8 +56,8 @@ std::ostream &RtDB2Context::toStream(std::ostream &os) const
     os << "processType: " << toString(_processType) << std::endl;
     os << "rootPath: " << _rootPath << std::endl;
     os << "configFileName: " << _configFileName << std::endl;
-    os << "networkName: " << _networkName << std::endl;
-    os << "databaseName: " << _databaseName << std::endl;
+    os << "networkName: " << getNetworkName() << std::endl;
+    os << "databaseName: " << getDatabaseName() << std::endl;
     return os;
 }
 
@@ -117,5 +115,5 @@ RtDB2Context RtDB2Context::Builder::build() const
     std::string netw = _processType == RtDB2ProcessType::dbclient ? "" : _networkName;
     RtDB2Configuration configuration(_configFileName, _processType, db, netw);
     configuration.load_configuration();
-    return RtDB2Context(_processType, netw, db, _rootPath, _configFileName, configuration);
+    return RtDB2Context(_processType, _rootPath, _configFileName, configuration);
 }

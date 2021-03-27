@@ -21,7 +21,7 @@ processType: comm
 rootPath: /tmp/rtdb2_storage
 configFileName: config/rtdb2_configuration.xml
 networkName: default
-databaseName: 
+databaseName: default
 
 === comm context ===
 [INFO] Loading network named: mynetwork
@@ -30,7 +30,7 @@ processType: comm
 rootPath: myrootpath
 configFileName: config/context_myconfig.xml
 networkName: mynetwork
-databaseName: 
+databaseName: mydatabase
 
 === database not allowed for comm ===
 [WARNING] Database cannot be set on comm processes. Comm processes use database set in Network configuration.
@@ -40,7 +40,7 @@ processType: comm
 rootPath: /tmp/rtdb2_storage
 configFileName: config/rtdb2_configuration.xml
 networkName: default
-databaseName: 
+databaseName: default
 
 === network not allow for dbclient ===
 [WARNING] Network can only be set for comm processes

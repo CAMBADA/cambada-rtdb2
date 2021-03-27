@@ -49,6 +49,8 @@ public:
         std::string const &network);
 
     void load_configuration();
+    const std::string get_network_name() const { return network_; };
+    const std::string get_database_name() const { return database_; };
     const KeyDetail &get_key_default() const;
     const KeyDetail &get_key_details(const std::string &id) const;
     const KeyDetail &get_key_details(const int &oid) const;
