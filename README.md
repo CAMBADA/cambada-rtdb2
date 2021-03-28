@@ -62,6 +62,23 @@ cd build/comm
 AGENT=2 ./comm
 ```
 
+## Developer
+
+Create rtdb client for agent 1 that reads/writes data to the default database as specified in the default configuration file:
+
+```
+RtDB2Context ctx = RtDB2Context::Builder(1).build();
+RtDB2 rtdb(ctx);
+```
+
+Create rtdb client for agent 1 that gives access to the data that remote agent 2 shares in the default database as specified in the default configuration file:
+
+```
+RtDB2Context ctx = RtDB2Context::Builder(1).build();
+RtDB2 rtdbRemote2(ctx, 2);
+```
+
+
 
 ## Also included
 
