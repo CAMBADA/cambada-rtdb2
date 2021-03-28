@@ -13,7 +13,7 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-    int agent;
+    int agent = -1;
     std::string network;
     std::string dbpath;
 
@@ -35,12 +35,19 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (agent < 0) {
+    if (agent < 0)
+    {
         char *envc = getenv("AGENT");
-        agent = envc == NULL ? 0 : atoi(envc);
+        agent = envc == NULL ? -1 : atoi(envc);
     }
 
-    std::cout << "Starting network: " << network << std::endl;
+    if (agent < 0)
+    {
+        std::cout << "[ERROR] No agent id provided. Agent id can be set via AGENT environment variable or via --agent argument." << std::endl;
+        return 1;
+    }
+
+    std::cout << "Starting network '" << network << "' for agent " << std::to_string(agent) << std::endl;
 
     RtDB2Context context = RtDB2Context::Builder(agent, RtDB2ProcessType::comm)
                                .withRootPath(dbpath)
