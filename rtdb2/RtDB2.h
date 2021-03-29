@@ -27,7 +27,6 @@
 
 // debugging
 #include "tprintf.hpp"
-#define RTDB2_DEBUG_MODE 1
 #ifdef RTDB2_DEBUG_MODE
     #define rdebug(...) tprintf(__VA_ARGS__)
 #else
