@@ -12,6 +12,9 @@ fi
 export RTDB_CONFIG_PATH=$(realpath $(dirname "$0"))/config
 echo RTDB_CONFIG_PATH=$RTDB_CONFIG_PATH
 
+# Generate output when test fails
+export CTEST_OUTPUT_ON_FAILURE=1
+
 # assumes build has completed successfully
 cd build/
 make test

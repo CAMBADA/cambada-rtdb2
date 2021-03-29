@@ -14,7 +14,6 @@ Modified by Falcons:
 
 Also, a logging- and playback library was created, but it currently resides in Falcons codebase.
 
-
 ## Requirements
 
 This project uses some 3rd-party libraries:
@@ -22,17 +21,47 @@ This project uses some 3rd-party libraries:
 - zstd
 - LMDB
 - Msgpack
+- Xerces-c
+- xsdcxx
 
 ## Instructions
 
 ```
-clean.sh # optional clean before build
-build.sh
-test.sh # optional tests and demo's
+./clean.sh # optional clean before build
+./build.sh
+./test.sh # optional tests and demo's
 ```
 
 RTDB needs to know where to find the configuration file(s).
 You should set environment variable RTDB_CONFIG_PATH.
+
+## Docker
+
+The instructions in the previous chapter can also be performed in a docker environment. To create a docker image for rtdb run `docker-build.sh` and to start the docker image run `docker-run.sh`:
+
+```
+cd docker
+./docker-build.sh
+./docker-run.sh
+```
+
+Now, inside the docker container, the commands described in the previous chapter can be executed to build rtdb.
+
+After rtdb has been build successfully, the comm process can be run with (still inside the docker container):
+
+```
+cd build/comm
+AGENT=1 ./comm
+```
+
+Starting a second container and running an AGENT with another id, will show two agents that are communicating with each other:
+
+```
+./docker-run.sh
+cd build/comm
+AGENT=2 ./comm
+```
+
 
 ## Also included
 

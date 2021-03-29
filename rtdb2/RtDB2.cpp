@@ -13,6 +13,7 @@
 
 void RtDB2::construct()
 {
+    _configuration.load_configuration();
     // compressor
     const CompressorSettings compressor_settings = _configuration.get_compressor_settings();
     if (compressor_settings.name == "lz4")

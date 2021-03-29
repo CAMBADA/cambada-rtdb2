@@ -38,6 +38,7 @@ class RtDB2Configuration {
 public:
     RtDB2Configuration();
 
+    void load_configuration();
     int parse_configuration(std::string file_path = RTDB2_CONFIGURATION_FILE);
     const KeyDetail& get_key_default() const;
     const KeyDetail& get_key_details(const std::string& id) const;
@@ -50,7 +51,6 @@ public:
 private:
     void associate_keys_int_string(int oid, std::string id);
     void insert_key_detail(std::string id, KeyDetail detail);
-
 
     std::map<std::string, KeyDetail> keys_details_;
     std::map<int, std::string> reverse_key_map_;
