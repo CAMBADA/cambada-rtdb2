@@ -8,6 +8,9 @@ if [ -e $p ]; then
     \rm -rf $p || exit 1
 fi
 
+unset AGENT
+unset RTDB_CONFIG_PATH
+
 # Generate output when test fails
 export CTEST_OUTPUT_ON_FAILURE=1
 
