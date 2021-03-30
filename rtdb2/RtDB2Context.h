@@ -9,9 +9,9 @@ inline const char *toString(RtDB2ProcessType t)
 {
     switch (t)
     {
-    case comm:
+    case RtDB2ProcessType::comm:
         return "comm";
-    case dbclient:
+    case RtDB2ProcessType::dbclient:
         return "dbclient";
     default:
         return "[Unknown ProcessType]";

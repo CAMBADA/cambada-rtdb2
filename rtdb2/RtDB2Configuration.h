@@ -5,7 +5,7 @@
 
 #include "RtDB2Definitions.h"
 
-enum RtDB2ProcessType
+enum class RtDB2ProcessType
 {
     comm,
     dbclient
