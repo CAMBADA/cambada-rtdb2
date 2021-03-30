@@ -11,8 +11,6 @@ add_library(RtDB::comm ALIAS RtDBcomm)
 target_link_libraries(RtDBcomm rtdb2 RtDButils)
 set_target_properties(RtDBcomm PROPERTIES COMPILE_FLAGS "-fPIC")
 
-message(STATUS "PO library: ${Boost_PROGRAM_OPTIONS_LIBRARY}")
-
 # binary
 add_executable(comm main.cpp)
 target_link_libraries(comm
