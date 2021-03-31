@@ -16,8 +16,11 @@ public:
     {
         _myId = agentId;
         _myTeam = teamId;
-        std::string rtdb_path = "/tmp/rtdb_team_" + std::to_string(teamId);
-        _rtdb = RtDB2Store::getInstance().getRtDB2(agentId, rtdb_path.c_str());
+        std::string rtdb_path = "rtdb_team_" + std::to_string(teamId);
+        RtDB2Context ctx = RtDB2Context::Builder(agentId)
+            .withDatabase(rtdb_path)
+            .build();
+        _rtdb = new RtDB2(ctx);
         _iteration = 0;
     }
     bool tick(float sleeptime, bool synchronize)
@@ -126,8 +129,11 @@ public:
         {
             // sleep a bit to 'ensure' all robots are in waiting mode, otherwise they might run out of sync
             usleep(100000);
-            std::string rtdb_path = "/tmp/rtdb_team_" + std::to_string(teamId);
-            _rtdb = RtDB2Store::getInstance().getRtDB2(0, rtdb_path.c_str());
+            std::string rtdb_path = "rtdb_team_" + std::to_string(teamId);
+            RtDB2Context ctx = RtDB2Context::Builder(0)
+                .withDatabase(rtdb_path)
+                .build();
+            _rtdb = new RtDB2(ctx);
             _threads.push_back(std::thread(&Team::heartbeat, this, frequency, iterations));
         }
     }
