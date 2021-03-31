@@ -1,25 +1,13 @@
 #include "RtDB2Store.h"
 
-RtDB2* RtDB2Store::getRtDB2(int db_identifier)
+RtDB2 *RtDB2Store::getRtDB2(int db_identifier, RtDB2Context &context)
 {
-    return getRtDBInstance( std::make_pair(db_identifier, "") );
+    return getRtDBInstance(db_identifier, context);
 }
-RtDB2* RtDB2Store::getRtDB2(int db_identifier, char team_char)
+
+RtDB2 *RtDB2Store::getRtDBInstance(int db_identifier, RtDB2Context &context)
 {
-    std::string path = "";
-    // TODO: this should be reworked in a more general way, the SIM path switching was basically a Falcons hack
-    //if (team_char == 'B')
-    //{
-    //    path = RTDB2_SIM_TEAM_B_PATH;
-    //}
-    return getRtDBInstance( std::make_pair(db_identifier, path) );
-}
-RtDB2* RtDB2Store::getRtDB2(int db_identifier, std::string path)
-{
-    return getRtDBInstance( std::make_pair(db_identifier, path) );
-}
-RtDB2* RtDB2Store::getRtDBInstance(const RtDB2InstanceKey& key)
-{
+    RtDB2InstanceKey key = std::make_pair(db_identifier, context.getDatabasePath());
     // find key.
     // if not found, create a new rtdb instance and add to the map under the key.
     // if found, return the existing rtdb instance
@@ -33,16 +21,7 @@ RtDB2* RtDB2Store::getRtDBInstance(const RtDB2InstanceKey& key)
     {
         // rtdb instance not found.
         // create instance and add to the map
-        RtDB2* newInstance = 0;
-        if (key.second == "")
-        {
-            newInstance = new RtDB2(key.first);
-        }
-        else
-        {
-            newInstance = new RtDB2(key.first, key.second);
-        }
-
+        RtDB2 *newInstance = new RtDB2(context, db_identifier);
         _rtdbInstances[key] = newInstance;
 
         return newInstance;

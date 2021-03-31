@@ -11,6 +11,7 @@
 
 #include <boost/thread/thread.hpp>
 
+#include "../../rtdb2/RtDB2Context.h"
 #include "../../rtdb2/RtDB2Store.h"
 #include "MulticastSocket.h"
 #include "timer.hpp"
@@ -23,14 +24,17 @@
 class Comm
 {
 public:
-    Comm();
+    Comm(RtDB2Context const &context);
     ~Comm();
     
-    void run();
+    boost::thread start() {
+        return boost::thread(&Comm::run, this);
+    }
+    static void shutdown();
 
     // public properties, overridable until initialize() is called
+    RtDB2Context          context_;
     int                   agentId;
-    std::string           dbPath = RTDB2_DEFAULT_PATH;
     CommunicationSettings settings;
     
 private:
@@ -43,6 +47,8 @@ private:
     RtDB2                *_rtdb = NULL;
     int                   _counter = 0;
     
+    void run();
+
     // singular operations
     void receive();
     void transmit();

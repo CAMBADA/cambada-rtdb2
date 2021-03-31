@@ -11,6 +11,7 @@
 #include <iostream>
 #include <semaphore.h>
 
+#include "RtDB2Context.h"
 #include "RtDB2Item.h"
 #include "RtDB2Definitions.h"
 #include "RtDB2ErrorCode.h"
@@ -37,8 +38,11 @@ class RtDB2
 {
 
 public:
-    // An RTDB instance is always associated to an agent ID.
-    RtDB2(int agentId, std::string const &path = RTDB2_DEFAULT_PATH);
+    // Context specifies the local agent that reads and writes data
+    RtDB2(RtDB2Context const &context);
+    // Context specifies the local agent that reads the data of the remote agent.
+    // When remote agent and local agent are equal the local agent reads its own data.
+    RtDB2(RtDB2Context const &context, int remoteAgentId);
 
     // Put a value for associated agent ID.
     template <typename T>
@@ -77,10 +81,6 @@ public:
     template <typename T>
     int getAndClear(std::string const &key, T *value);
 
-    // Configuration
-    RtDB2Configuration const &getConfiguration() const;
-    std::string getPath() { return _path; }
-
     // Temporary functions to compress/decompress, for use in stimulator / logger -- TODO: refactor all of it into this rtdb package
     void compress(std::string &s);
     void decompress(std::string &s);
@@ -98,9 +98,8 @@ private:
     boost::shared_ptr<RtDB2Storage> getStorage(int agentId, bool isSync);
 
     // Datamembers
+    const RtDB2Context                 _context;
     const int                          _agentId;
-    std::string                        _path;
-    RtDB2Configuration                 _configuration;
     boost::shared_ptr<RtDB2Compressor> _compressor;
 
     // Storage
@@ -197,7 +196,7 @@ int RtDB2::putCore(std::string const &key, T *value, int agentId)
     if(it == sync_.end())
     {
         it = sync_.insert(std::pair<int, boost::shared_ptr<RtDB2Storage> >(
-                agentId, boost::make_shared<RtDB2LMDB>(_path, createAgentName(agentId, true)))).first;
+                agentId, boost::make_shared<RtDB2LMDB>(_context.getDatabasePath(), createAgentName(agentId, true)))).first;
     }
 
     if(it != sync_.end())

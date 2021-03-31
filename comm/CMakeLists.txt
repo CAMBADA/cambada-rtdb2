@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1)
 project(RtDBcomm)
 
 # system dependencies
-find_package(Boost REQUIRED COMPONENTS system filesystem thread QUIET)
+find_package(Boost REQUIRED COMPONENTS system program_options filesystem thread QUIET)
 
 # libraries (internal)
 add_library(RtDBcomm SHARED comm.cpp timer.cpp statistics.cpp MulticastSocket.cpp)
@@ -17,6 +17,7 @@ target_link_libraries(comm
     RtDBcomm
     RtDButils
     ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
 )

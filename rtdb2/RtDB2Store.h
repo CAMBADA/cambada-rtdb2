@@ -19,9 +19,7 @@ class RtDB2Store
         RtDB2Store(RtDB2Store const&)      = delete;
         void operator=(RtDB2Store const&)  = delete;
 
-        RtDB2* getRtDB2(int db_identifier);
-        RtDB2* getRtDB2(int db_identifier, char team_char);
-        RtDB2* getRtDB2(int db_identifier, std::string path);
+        RtDB2* getRtDB2(int db_identifier, RtDB2Context &context);
 
     private:
         RtDB2Store() {}
@@ -29,7 +27,7 @@ class RtDB2Store
         typedef std::pair<int, std::string> RtDB2InstanceKey;
         std::map< RtDB2InstanceKey, RtDB2* > _rtdbInstances;
 
-        RtDB2* getRtDBInstance(const RtDB2InstanceKey& key);
+        RtDB2* getRtDBInstance(int db_identifier, RtDB2Context &context);
 };
 
 #endif //CAMBADA_RtDB2Store_H

@@ -4,15 +4,15 @@
 // test structs
 #include "robot.hpp"
 
-
 int main(int argc, char **argv)
 {
     // no argument parsing
-    
+
     // setup a RTDB database
     int agentId = 2; // arbitrary
-    auto rtdb = new RtDB2(agentId);
-    
+    RtDB2Context ctx = RtDB2Context::Builder(agentId).build();
+    auto rtdb = new RtDB2(ctx);
+
     // write a struct
     Robot robot_put;
     robot_put.alive = true;
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     std::cout << "writing data into RTDB:" << std::endl;
     std::cout << robot_put << std::endl;
     rtdb->put("ROBOT_DATA", &robot_put);
-    
+
     // sleep a bit
     std::cout << "sleeping a bit ..." << std::endl;
     sleep(1);
@@ -37,9 +37,7 @@ int main(int argc, char **argv)
     // TODO: a built-in recursive json formatter would be nice?
     // then we could just dump the entire struct:
     //std::cout << robot_get << std::endl;
-    
 
     // done
     return 0;
 }
-

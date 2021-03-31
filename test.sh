@@ -8,9 +8,8 @@ if [ -e $p ]; then
     \rm -rf $p || exit 1
 fi
 
-# RTDB now requires this environment variable to be set
-export RTDB_CONFIG_PATH=$(realpath $(dirname "$0"))/config
-echo RTDB_CONFIG_PATH=$RTDB_CONFIG_PATH
+unset AGENT
+unset RTDB_CONFIG_PATH
 
 # Generate output when test fails
 export CTEST_OUTPUT_ON_FAILURE=1
