@@ -1,0 +1,24 @@
+<RtDB2Configuration>
+  <Networks>
+    <Network loopback="false" send="true">
+      <MulticastAddress>224.16.32.188</MulticastAddress>
+      <MulticastPort>8011</MulticastPort>
+      <Interface>wlo1</Interface>
+      <Frequency>40</Frequency>
+    </Network>
+  </Networks>
+  <Databases>
+    <Database>
+      <Compression/>
+      <KeyDefaults shared="true" period="1" phase="1" timeout="2.5"/>
+      <Keys>
+        <Key id="shared_key"/>
+        <Key id="local_key" shared="false"/>
+        <Key id="another_shared_key" shared="true"/>
+        <Key id="all_options_key" shared="true" period="2" phase="3" timeout="4.0"/>
+        <Key id="oid_key1" oid="1"/>
+        <Key id="oid_key15" oid="15"/>
+      </Keys>
+    </Database>
+  </Databases>
+</RtDB2Configuration>

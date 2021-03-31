@@ -56,6 +56,7 @@ set(RTDB2_TARGET_DEPENDENCIES lmdb msgpack lz4 zstd)
 # Library target sources (cpp/h)
 set(RTDB2_LIBRARY_SOURCES
         RtDB2.cpp RtDB2.h
+        RtDB2Context.cpp RtDB2Context.h
         RtDB2Item.h
         RtDB2Store.cpp RtDB2Store.h
         serializer/RtDB2Serializer.h compressor/RtDB2Compressor.h storage/RtDB2Storage.h

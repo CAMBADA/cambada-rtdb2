@@ -1,0 +1,10 @@
+<RtDB2Configuration>
+  <Networks>
+    <Network>
+      <MulticastAddress>224.16.32.74</MulticastAddress>
+      <MulticastPort>1234</MulticastPort>
+      <Frequency>25</Frequency>
+    </Network>
+  </Networks>
+</RtDB2Configuration>
+

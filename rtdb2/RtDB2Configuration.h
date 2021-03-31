@@ -5,6 +5,12 @@
 
 #include "RtDB2Definitions.h"
 
+enum class RtDB2ProcessType
+{
+    comm,
+    dbclient
+};
+
 struct KeyDetail {
     KeyDetail() : shared(true), period(1), phase_shift(0), timeout(1.0) {}
     KeyDetail(const KeyDetail& defaults) :
@@ -29,35 +35,45 @@ struct CommunicationSettings
     std::string interface = "auto";
     int port = 8001;
     float frequency = 30;
-    bool compression = false;
     bool loopback = false;
     bool send = true;
 };
 
-class RtDB2Configuration {
+class RtDB2Configuration
+{
 public:
-    RtDB2Configuration();
+    RtDB2Configuration(
+        std::string const &configFile,
+        RtDB2ProcessType const &processType,
+        std::string const &database,
+        std::string const &network);
 
     void load_configuration();
-    int parse_configuration(std::string file_path = RTDB2_CONFIGURATION_FILE);
-    const KeyDetail& get_key_default() const;
-    const KeyDetail& get_key_details(const std::string& id) const;
-    const KeyDetail& get_key_details(const int& oid) const;
-    const std::string* get_string_identifier(const int& oid) const;
-    const CompressorSettings& get_compressor_settings() const;
-    const CommunicationSettings& get_communication_settings() const;
+    const std::string get_network_name() const { return network_; };
+    const std::string get_database_name() const { return database_; };
+    const KeyDetail &get_key_default() const;
+    const KeyDetail &get_key_details(const std::string &id) const;
+    const KeyDetail &get_key_details(const int &oid) const;
+    const std::string *get_string_identifier(const int &oid) const;
+    const CompressorSettings &get_compressor_settings() const;
+    const CommunicationSettings &get_communication_settings() const;
 
-    friend std::ostream& operator<<(std::ostream& os, RtDB2Configuration& obj);
+    friend std::ostream &operator<<(std::ostream &os, const RtDB2Configuration &obj);
+
 private:
+    int parse_configuration(std::string file_path);
     void associate_keys_int_string(int oid, std::string id);
     void insert_key_detail(std::string id, KeyDetail detail);
 
+    std::string configFile_;
+    RtDB2ProcessType processType_;
+    std::string database_;
+    std::string network_;
     std::map<std::string, KeyDetail> keys_details_;
     std::map<int, std::string> reverse_key_map_;
     KeyDetail default_details_;
     CompressorSettings compressor_settings_;
     CommunicationSettings communication_settings_;
 };
-
 
 #endif //CAMBADA_RTDB2KEYS_H

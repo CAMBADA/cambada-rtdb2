@@ -13,9 +13,8 @@
 
 void RtDB2::construct()
 {
-    _configuration.load_configuration();
     // compressor
-    const CompressorSettings compressor_settings = _configuration.get_compressor_settings();
+    const CompressorSettings compressor_settings = _context.getConfiguration().get_compressor_settings();
     if (compressor_settings.name == "lz4")
     {
         _compressor = boost::make_shared<RtDB2CompressorLZ4>();
@@ -42,11 +41,19 @@ void RtDB2::construct()
     }
 }
 
-RtDB2::RtDB2(int agentId, std::string const &path)
+RtDB2::RtDB2(RtDB2Context const &context)
 :
-    _agentId(agentId),
-    _path(path),
-    _configuration(),
+    _context(context),
+    _agentId(context.getAgentId()),
+    _compressor(NULL)
+{
+    construct();
+}
+
+RtDB2::RtDB2(RtDB2Context const &context, int remoteAgentId)
+:
+    _context(context),
+    _agentId(remoteAgentId),
     _compressor(NULL)
 {
     construct();
@@ -65,7 +72,7 @@ boost::shared_ptr<RtDB2Storage> RtDB2::getStorage(int agentId, bool isSync)
     if (!s->count(agentId))
     {
         s->insert(std::pair<int, boost::shared_ptr<RtDB2Storage> >(
-                agentId, boost::make_shared<RtDB2LMDB>(_path, createAgentName(agentId, isSync))));
+                agentId, boost::make_shared<RtDB2LMDB>(_context.getDatabasePath(), createAgentName(agentId, isSync))));
     }
     return s->at(agentId);
 }
@@ -103,7 +110,7 @@ RtDB2Item RtDB2::makeItem(std::string const &key, int agentId, std::string const
     // it was considered to also make key and agentId part of item, but this was dropped after discussion with Ricardo due to data being redundant
     item.data = serialized_data;
     item.timestamp = rtime::now();
-    item.shared = _configuration.get_key_details(key).shared;
+    item.shared = _context.getConfiguration().get_key_details(key).shared;
     return item;
 }
 
@@ -296,7 +303,7 @@ int RtDB2::getFrame(RtDB2Frame &frame, RtDB2FrameSelection const &selection, int
         // check selection criteria
         if (errItem == RTDB2_SUCCESS)
         {
-            const KeyDetail& detail = _configuration.get_key_details(frameItem.key);
+            const KeyDetail& detail = _context.getConfiguration().get_key_details(frameItem.key);
             // locality attribute check
             if (keep)
             {
@@ -420,7 +427,7 @@ int RtDB2::waitForPut(std::string const &key, int agentId)
     if(it == sync_.end())
     {
         it = sync_.insert(std::pair<int, boost::shared_ptr<RtDB2Storage> >(
-                agentId, boost::make_shared<RtDB2LMDB>(_path, createAgentName(agentId, true)))).first;
+                agentId, boost::make_shared<RtDB2LMDB>(_context.getDatabasePath(), createAgentName(agentId, true)))).first;
     }
     it->second->append_to_sync_list(key, syncPoint);
 
@@ -446,11 +453,6 @@ int RtDB2::waitForPut(std::string const &key, int agentId)
 
     rdebug("waitForPut end");
     return RTDB2_SUCCESS;
-}
-
-const RtDB2Configuration& RtDB2::getConfiguration() const
-{
-    return _configuration;
 }
 
 void RtDB2::compress(std::string &s)
