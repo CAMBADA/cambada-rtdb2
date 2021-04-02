@@ -1,7 +1,7 @@
 #include <libgen.h>
 #include <iostream>
 #include "RtDB2.h"
-#include "../comm/comm.hpp"
+#include "comm.hpp"
 
 #define CONFIGFILE "/config/test_clients.xml"
 #define NETWORK_A "network-A"
