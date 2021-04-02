@@ -164,6 +164,19 @@ Example configuration:
 </RtDB2Configuration>
 ```
 
+## Dependencies
+
+The table lists the RtDB binaries and libraries and their dependencies.
+
+| Name                 | Type   | Dependencies |
+| -------------------- | ------ | - |
+| RtDB::config         | static | - |
+| RtDB::definitions    | static | - |
+| RtDB::utils          | shared | RtDB::definitions |
+| RtDB::rtdb           | static | RtDB::definitions RtDB::utils RtDB::config |
+| RtDB::comm           | shared | RtDB::rtdb RtDB::utils |
+| rtdb2_dictionary_gen | binary | RtDB::rtdb |
+| comm                 | binary | RtDB::comm RtDB::utils |
 
 ## Also included
 
