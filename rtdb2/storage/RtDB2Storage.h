@@ -6,7 +6,7 @@
 #include <fstream>
 #include <vector>
 
-#include "../RtDB2SyncPoint.h"
+#include "RtDB2SyncPoint.h"
 
 class RtDB2Storage {
 public:
