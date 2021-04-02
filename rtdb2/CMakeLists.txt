@@ -88,4 +88,3 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-fPIC")
 
 ### Call the CMake inside dictionary_generator
 #TODO add_subdirectory(dictionary_generator)
-add_subdirectory(configuration)
