@@ -278,10 +278,11 @@ int main(int argc, char **argv)
         }
     }
     Comm::shutdown();
-    usleep(100000);
-    // TODO: Shutdown blocks on receiver thread in comm
-    // t1.join();
-    // t2.join();
+    // wait for all threads to finish
+    for (std::vector<boost::thread>::iterator it = threads.begin(); it != threads.end(); ++it)
+    {
+        it->join();
+    }
 
     // done
     return 0;
