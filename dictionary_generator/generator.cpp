@@ -1,4 +1,4 @@
-#include "../RtDB2.h"
+#include "RtDB2.h"
 // System dependencies
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
@@ -7,7 +7,7 @@
 #include <sstream>
 
 // Structures directories
-#include "../example_rtdb2_item.h"
+#include "example_rtdb2_item.h"
 
 #define RTDB2_GENERATOR_PATH    "/tmp/rtdb2_gen_storage"
 #define RTDB2_BATCHS_PATH       "/tmp/rtdb2_gen_batchs"

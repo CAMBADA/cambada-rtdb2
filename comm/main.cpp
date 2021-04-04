@@ -6,7 +6,7 @@
  */
 
 #include "comm.hpp"
-#include "../../rtdb2/RtDB2Context.h"
+#include "RtDB2Context.h"
 #include "boost/program_options.hpp"
 
 namespace po = boost::program_options;

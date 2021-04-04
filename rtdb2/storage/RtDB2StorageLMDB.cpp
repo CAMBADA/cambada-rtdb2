@@ -2,9 +2,9 @@
 
 #include <boost/filesystem.hpp>
 #include <sstream>
-#include "../RtDB2ErrorCode.h"
+#include "RtDB2ErrorCode.h"
 #include "RtDB2Definitions.h"
-#include "../serializer/RtDB2Serializer.h"
+#include "serializer/RtDB2Serializer.h"
 
 
 RtDB2LMDB::RtDB2LMDB(std::string parent_path, std::string name) : is_initialized_(false)

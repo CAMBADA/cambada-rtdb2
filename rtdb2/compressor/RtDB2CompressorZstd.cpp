@@ -3,7 +3,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <sstream>
-#include "../RtDB2ErrorCode.h"
+#include "RtDB2ErrorCode.h"
 
 RtDB2CompressorZstd::RtDB2CompressorZstd() :
         compressor_dict_(NULL), decompressor_dict_(NULL),
