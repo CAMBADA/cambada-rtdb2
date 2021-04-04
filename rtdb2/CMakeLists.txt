@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-project(rtdb2)
+project(RtDBrtdb)
 # TODO below listing could use some cleanup / modernizing
 
 
@@ -44,13 +44,6 @@ if(XercesC_FOUND)
     include_directories(SYSTEM ${XercesC_INCLUDE_DIRS})
 endif()
 
-### Define and create a directory for generated header files
-set(GENERATED_INC_DIR ${CMAKE_BINARY_DIR}/include)
-file(MAKE_DIRECTORY ${GENERATED_INC_DIR})
-include_directories(
-    ${GENERATED_INC_DIR}
-)
-
 ### RtDB2 Compilation
 set(RTDB2_TARGET_DEPENDENCIES lmdb msgpack lz4 zstd)
 # Library target sources (cpp/h)
@@ -67,24 +60,31 @@ set(RTDB2_LIBRARY_SOURCES
         compressor/RtDB2CompressorZstd.cpp compressor/RtDB2CompressorZstd.h)
 # Library target dependencies (.so/.a)
 set(RTDB2_LIBRARY_DEPENDENCIES
-        ${LMDB_LIBRARIES}
-        ${MSGPACK_LIBRARIES}
-        ${LZ4_LIBRARIES} ${ZSTD_LIBRARIES}
-        ${Boost_LIBRARIES}
-        xerces-c pthread)
-### Adding RTDB2 as Library
-add_library(rtdb2 ${RTDB2_LIBRARY_SOURCES})
-target_link_libraries(rtdb2 RtDB::definitions RtDB::utils RtDB::config)
-target_link_libraries(rtdb2 ${RTDB2_LIBRARY_DEPENDENCIES})
-# If the interface has a public include of the dependency (e.g. LMDB), it must be packed with the RtDB2 library
-target_include_directories(rtdb2
-        PUBLIC ${MSGPACK_INCLUDE_DIRS}
-        PUBLIC ${LMDB_INCLUDE_DIR})
+    ${LMDB_LIBRARIES}
+    ${MSGPACK_LIBRARIES}
+    ${LZ4_LIBRARIES}
+    ${ZSTD_LIBRARIES}
+    ${Boost_LIBRARIES}
+    xerces-c
+    pthread
+)
 
-set_target_properties(rtdb2 PROPERTIES COMPILE_FLAGS "-fPIC")
+### Library rtdb (static)
+add_library(${PROJECT_NAME} STATIC ${RTDB2_LIBRARY_SOURCES})
+add_library(RtDB::rtdb ALIAS ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}
+    RtDB::definitions
+    RtDB::config
+    RtDB::utils
+    ${RTDB2_LIBRARY_DEPENDENCIES}
+)
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-fPIC")
 
 ### Some programs used to debug RtDB2
 
 ### Call the CMake inside dictionary_generator
 #TODO add_subdirectory(dictionary_generator)
-add_subdirectory(configuration)

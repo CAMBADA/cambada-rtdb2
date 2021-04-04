@@ -2,3 +2,4 @@ build/
 lib/
 bin/
 python/__pycache__/
+.vscode/

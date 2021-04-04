@@ -108,7 +108,7 @@ void Comm::receive()
         }
         cdebug("receive finish");
     }
-    else
+    else if (received < 0)
     {
         tprintf("WARNING: receive failed (returned %d)", received);
     }
@@ -120,6 +120,7 @@ void Comm::receiver()
     {
         receive(); // blocking
     }
+    tprintf("INFO: receiver finished");
 }
 
 void Comm::transmit()

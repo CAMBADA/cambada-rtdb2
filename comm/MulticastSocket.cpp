@@ -1,6 +1,7 @@
 #include "MulticastSocket.h"
 
 #include <set>
+#include <sys/poll.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -178,9 +179,30 @@ int MulticastSocket::sendData(void* data, int size)
     return sendto(_socket, data, size, 0, (struct sockaddr *)&_destAddress, sizeof (struct sockaddr));
 }
 
-int MulticastSocket::receiveData(void* data, int size)
+int MulticastSocket::receiveData(void *data, int size)
 {
-    return recv(_socket, data, size, 0);
+    struct pollfd pfd;
+
+    pfd.fd = _socket;
+    pfd.events = POLLIN; // check if there is data to read
+    int ret = poll(&pfd, 1, 250); // timeout 250 ms
+
+    if (ret == -1)
+    {
+        perror("poll");
+        return -1;
+    }
+    if (!ret)
+    {
+        // timeout
+        return 0;
+    }
+    if (pfd.revents & POLL_IN)
+    {
+        // data available to read - non-blocking recv
+        return recv(_socket, data, size, 0);
+    }
+    return 0;
 }
 
 bool MulticastSocket::autoSelectInterface()

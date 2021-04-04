@@ -11,8 +11,8 @@
 
 #include <boost/thread/thread.hpp>
 
-#include "../../rtdb2/RtDB2Context.h"
-#include "../../rtdb2/RtDB2Store.h"
+#include "RtDB2Context.h"
+#include "RtDB2Store.h"
 #include "MulticastSocket.h"
 #include "timer.hpp"
 #include "statistics.hpp"

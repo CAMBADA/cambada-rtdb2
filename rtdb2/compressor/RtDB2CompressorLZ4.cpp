@@ -3,7 +3,7 @@
 #include <lz4.h>
 #include <stdexcept>
 
-#include "../RtDB2ErrorCode.h"
+#include "RtDB2ErrorCode.h"
 
 RtDB2CompressorLZ4::RtDB2CompressorLZ4() {
 }
