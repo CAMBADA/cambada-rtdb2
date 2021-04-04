@@ -18,12 +18,20 @@ RUN apt install -y \
     libxerces-c3-dev \
     libzstd-dev \
     xsdcxx \
+    python3-pip \
+    python3-lmdb \
+    python3-msgpack \
  && rm -rf /var/lib/apt/lists/* \
  && ln -s /usr/include/json-c/ /usr/include/json
 
+RUN pip3 install \
+    hexdump \
+    pause
+
 # Set environment variables
 RUN echo 'export RTDB_BUILD=/rtdb/build' >> /root/.bashrc \
- && echo 'export RTDB_CONFIG_PATH=/rtdb/config' >> /root/.bashrc
+ && echo 'export RTDB_CONFIG_PATH=/rtdb/config' >> /root/.bashrc \
+ && echo 'source /rtdb/alias' >> /root/.bashrc
 
 COPY src/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod a+x /docker-entrypoint.sh
