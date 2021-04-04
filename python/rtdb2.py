@@ -6,7 +6,7 @@ import struct
 import datetime, time
 import os
 
-RTDB2_DEFAULT_PATH = "/tmp/rtdb2_storage"
+RTDB2_DEFAULT_PATH = "/tmp/rtdb2_storage/2/default"
 ENCODING = None
 if sys.version_info[0] > 2:
     ENCODING = 'utf-8'
