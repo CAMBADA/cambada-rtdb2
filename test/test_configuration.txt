@@ -14,6 +14,19 @@ Defaults:
 	Period: 1
 	Phase shift: 0
 
+=== No configuration ===
+	multiCastIP = 
+	frequency   = 30
+	port        = 8001
+	loopback    = 0
+	send        = 1
+Associations between integer keys and string: 
+Specific key configurations: 
+Defaults:
+	Shared: 1
+	Period: 1
+	Phase shift: 0
+
 === config/minimal_configuration.xml ===
 	multiCastIP = 224.16.32.74
 	frequency   = 25
@@ -85,3 +98,6 @@ Defaults:
 	Period: 1
 	Phase shift: 1
 
+=== Invalid configuration ===
+[WARNING] Invalid context. Configuration file is required for non-default database.
+Loading of invalid configuration prohibited

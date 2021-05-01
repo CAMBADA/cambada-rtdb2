@@ -113,12 +113,28 @@ RtDB2Context::Builder &RtDB2Context::Builder::withRootPath(std::string const &ro
 
 RtDB2Context::Builder &RtDB2Context::Builder::withConfigFileName(std::string const &configFileName)
 {
-    _configFileName = configFileName;
+    if (_processType == RtDB2ProcessType::comm && configFileName.compare("") == 0)
+    {
+        std::cout << "[WARNING] Configuration file is required for Comm processes." << std::endl;
+    }
+    else
+    {
+        _configFileName = configFileName;
+    }
     return *this;
+}
+
+RtDB2Context::Builder &RtDB2Context::Builder::withoutConfigFile()
+{
+    return withConfigFileName("");
 }
 
 RtDB2Context RtDB2Context::Builder::build() const
 {
+    if (_configFileName.compare("") == 0 && _databaseName.compare("default") != 0)
+    {
+        std::cout << "[WARNING] Invalid context. Configuration file is required for non-default database." << std::endl;
+    }
     // process type comm extracts the database name from the network config
     std::string db = _processType == RtDB2ProcessType::comm ? "" : _databaseName;
     std::string netw = _processType == RtDB2ProcessType::dbclient ? "" : _networkName;
