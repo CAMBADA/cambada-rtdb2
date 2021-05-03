@@ -65,6 +65,7 @@ public:
     Builder &withDatabase(std::string const &databaseName);
     Builder &withRootPath(std::string const &rootPath);
     Builder &withConfigFileName(std::string const &configFileName);
+    Builder &withoutConfigFile();
     RtDB2Context build() const;
 
 private:
