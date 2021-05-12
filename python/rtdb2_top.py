@@ -27,10 +27,10 @@ if __name__ == "__main__":
                 sys.stdout.write('Write agent number: ')
 
                 agent = input()
-                agent = "agent" + agent
                 if agent in agents:
                     storage_path = os.path.join(DEFAULT_PATH, agent)
                     break
+        storage_path = os.path.join(storage_path, "default")
     else:
         storage_path = sys.argv[1]
 
