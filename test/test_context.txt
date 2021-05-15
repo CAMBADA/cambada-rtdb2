@@ -63,3 +63,12 @@ networkName:
 databaseName: default
 databasePath: /tmp/rtdb2_storage/2/default
 
+=== default context without config file ===
+me: 3
+processType: dbclient
+rootPath: /tmp/rtdb2_storage
+configFileName: 
+networkName: 
+databaseName: default
+databasePath: /tmp/rtdb2_storage/3/default
+

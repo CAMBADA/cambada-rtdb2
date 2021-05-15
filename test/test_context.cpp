@@ -36,6 +36,12 @@ int main(int argc, char **argv)
             .build();
     std::cout << ctx << std::endl;
 
+    std::cout << "=== default context without config file ===" << std::endl;
+    ctx = RtDB2Context::Builder(3)
+            .withoutConfigFile()
+            .build();
+    std::cout << ctx << std::endl;
+
     // done
     return 0;
 }

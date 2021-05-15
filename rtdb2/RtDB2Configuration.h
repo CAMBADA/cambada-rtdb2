@@ -22,7 +22,7 @@ struct KeyDetail {
 };
 
 struct CompressorSettings {
-    CompressorSettings() : name("zstd"), use_dictionary(true) {}
+    CompressorSettings() : name("zstd"), use_dictionary(false) {}
     CompressorSettings(std::string name, bool use_dictionary) :
             name(name), use_dictionary(use_dictionary) {}
     std::string name;
