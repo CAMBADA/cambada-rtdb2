@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RTDB_TOOLS_FOLDER=$(dirname "$0")/python
+RTDB_TOOLS_FOLDER=$(dirname "${BASH_SOURCE[0]}")/python
 
 alias rget="python3 $RTDB_TOOLS_FOLDER/rtdb2_get.py $@"
 alias rput="python3 $RTDB_TOOLS_FOLDER/rtdb2_put.py $@"
