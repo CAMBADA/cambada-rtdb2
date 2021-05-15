@@ -20,10 +20,10 @@ int main(int argc, char **argv)
     // Declare the supported options.
     po::options_description desc("Allowed options");
     desc.add_options()
-        ("help", "produce help message")
-        ("agent", po::value<int>(&agent)->default_value(-1), "agent")
-        ("network", po::value<std::string>(&network)->default_value("default"), "network name")
-        ("dbpath", po::value<std::string>(&dbpath)->default_value(RTDB2_DEFAULT_PATH), "database storage directory");
+        ("help,h", "produce help message")
+        ("agent,a", po::value<int>(&agent)->default_value(-1), "agent")
+        ("network,n", po::value<std::string>(&network)->default_value("default"), "network name")
+        ("dbpath,p", po::value<std::string>(&dbpath)->default_value(RTDB2_DEFAULT_PATH), "database storage directory");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
