@@ -2,7 +2,7 @@
 import os
 import sys
 import argparse
-from rtdb2 import RtDB2Store, RTDB2_DEFAULT_PATH
+from rtdb2 import RtDB2MultiStore, RTDB2_DEFAULT_PATH
 import rtdb2tools
 
 
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Create instance of RtDB2Store and get data
-    rtdb2Store = RtDB2Store(args.path)
+    rtdb2Store = RtDB2MultiStore(args.path)
     items = rtdb2Store.getAllRtDBItems()
 
     # Sort items

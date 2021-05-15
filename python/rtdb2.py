@@ -6,7 +6,7 @@ import struct
 import datetime, time
 import os
 
-RTDB2_DEFAULT_PATH = "/tmp/rtdb2_storage/2/default"
+RTDB2_DEFAULT_PATH = "/tmp/rtdb2_storage"
 ENCODING = None
 if sys.version_info[0] > 2:
     ENCODING = 'utf-8'
@@ -39,6 +39,10 @@ def now():
 
 
 class RtDB2Store():
+    """
+    A RtDB2Store operates on a single database. Example: /tmp/rtdb_teamA/1/default/.
+    See also RtDB2MultiStore which can open all databases, example /tmp/rtdb_teamA.
+    """
     def __init__(self, path, readonly=True):
         self.path = path
         self.readonly = readonly
@@ -410,3 +414,33 @@ class RtDBSyncPoint():
     def get_data(raw_data):
         data = msgpack.unpackb(raw_data, raw=False)
         return data
+
+class RtDB2MultiStore():
+    """
+    A RtDB2MultiStore is used for rtop and rdump to show an entire team in one view.
+    """
+    def __init__(self, path, readonly=True):
+        # check base folder exists
+        if not os.path.isdir(path):
+            raise Exception("folder not found: " + path)
+        self.path = path
+        # find agents
+        self.agents = os.listdir(path)
+        # setup instances
+        self.dbname = "default" # TODO: make configurable?
+        self.agentStores = {}
+        for agent in self.agents:
+            storage_path = os.path.join(path, agent, self.dbname)
+            self.agentStores[agent] = RtDB2Store(storage_path, readonly)
+
+    def closeAll(self):
+        for store in self.agentStores.values():
+            store.closeAll()
+
+    def getAllRtDBItems(self):
+        items = []
+        # iterate over agent stores
+        for store in self.agentStores.values():
+            items += store.getAllRtDBItems()
+        return items
+
