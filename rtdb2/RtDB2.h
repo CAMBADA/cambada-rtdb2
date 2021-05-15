@@ -98,13 +98,16 @@ private:
     boost::shared_ptr<RtDB2Storage> getStorage(int agentId, bool isSync);
 
     // Datamembers
-    const RtDB2Context                 _context;
     const int                          _agentId;
     boost::shared_ptr<RtDB2Compressor> _compressor;
 
     // Storage
     std::map<int, boost::shared_ptr<RtDB2Storage> > _storage;
     std::map<int, boost::shared_ptr<RtDB2Storage> > sync_; // TODO merge this with main storage? specialize RtDB2Item?
+
+protected:
+    const RtDB2Context                 _context;
+
 };
 
 

@@ -43,18 +43,18 @@ void RtDB2::construct()
 
 RtDB2::RtDB2(RtDB2Context const &context)
 :
-    _context(context),
     _agentId(context.getAgentId()),
-    _compressor(NULL)
+    _compressor(NULL),
+    _context(context)
 {
     construct();
 }
 
 RtDB2::RtDB2(RtDB2Context const &context, int remoteAgentId)
 :
-    _context(context),
     _agentId(remoteAgentId),
-    _compressor(NULL)
+    _compressor(NULL),
+    _context(context)
 {
     construct();
     rdebug("constructed for agent=%d path=%s at p=%p", agentId, path.c_str(), this);
