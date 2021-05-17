@@ -1,0 +1,24 @@
+#!/bin/bash
+
+RTDB_TOOLS_FOLDER=$(dirname $(realpath "$BASH_SOURCE[0]"))/python
+
+function rget ()
+{
+    python3 $RTDB_TOOLS_FOLDER/rtdb2_get.py $@
+}
+
+function rput ()
+{
+    python3 $RTDB_TOOLS_FOLDER/rtdb2_put.py $@
+}
+
+function rdump ()
+{
+    python3 $RTDB_TOOLS_FOLDER/rtdb2_dump.py $@
+}
+
+function rmon ()
+{
+    python3 $RTDB_TOOLS_FOLDER/rtdb2_mon.py $@
+}
+

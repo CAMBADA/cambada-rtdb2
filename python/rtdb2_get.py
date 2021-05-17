@@ -30,7 +30,8 @@ Example: rtdb2_get.py -a 2 DIAG_WORLDMODEL_LOCAL -x "['balls'][0]['result']"
     args = parser.parse_args()
 
     # Create instance of RtDB2Store and read databases from disk
-    rtdb2Store = RtDB2Store(args.path)
+    p = os.path.join(args.path, str(args.agent), 'default')
+    rtdb2Store = RtDB2Store(p)
 
     item = rtdb2Store.get(args.agent, args.key, timeout=None)
     if args.expression:

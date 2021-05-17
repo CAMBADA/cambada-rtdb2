@@ -1,0 +1,5 @@
+agent key                            type   age    value
+    2 ROBOT_DATA                     local     1s  {'pos': [1.100000023841858, 2.5, 0.0], 'alive': True, 'intention': 'WIN'}
+    2 TEST_FLOAT                     local     1s  1.0
+    2 TEST_INT                       local     1s  37
+    2 TEST_STRING                    local     1s  hi!!

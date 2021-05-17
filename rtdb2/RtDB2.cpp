@@ -43,20 +43,26 @@ void RtDB2::construct()
 
 RtDB2::RtDB2(RtDB2Context const &context)
 :
-    _context(context),
     _agentId(context.getAgentId()),
-    _compressor(NULL)
+    _compressor(NULL),
+    _context(context)
 {
     construct();
 }
 
 RtDB2::RtDB2(RtDB2Context const &context, int remoteAgentId)
 :
-    _context(context),
     _agentId(remoteAgentId),
-    _compressor(NULL)
+    _compressor(NULL),
+    _context(context)
 {
     construct();
+    rdebug("constructed for agent=%d path=%s at p=%p", agentId, path.c_str(), this);
+}
+
+RtDB2Context &RtDB2::getContext() const
+{
+    return _context;
 }
 
 boost::shared_ptr<RtDB2Storage> RtDB2::getStorage(int agentId, bool isSync)
@@ -139,7 +145,7 @@ int RtDB2::getItem(std::string const &key, RtDB2Item &item)
 
 int RtDB2::getCore(std::string const &key, RtDB2Item &item, int agentId, bool consume)
 {
-    rdebug("getCore start agent=%d consume=%d key=%s", agentId, consume, key.c_str());
+    rdebug("getCore start agent=%d consume=%d key=%s at p=%p", agentId, consume, key.c_str(), this);
     int err = 0;
 
     // acquire storage, initialize if needed

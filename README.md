@@ -1,4 +1,4 @@
-# RtDB v2.5
+# RtDB v3
 
 Extension on 2nd Generation of CAMBADA's Real-time Database
 
@@ -13,6 +13,11 @@ Modified by Falcons:
 - rewrite basic interfacing
 
 Also, a logging- and playback library was created, but it currently resides in Falcons codebase.
+
+Modification by Rob:
+- ... description
+
+TODO: cleanup this header section
 
 ## Requirements
 
