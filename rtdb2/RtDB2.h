@@ -43,6 +43,7 @@ public:
     // Context specifies the local agent that reads the data of the remote agent.
     // When remote agent and local agent are equal the local agent reads its own data.
     RtDB2(RtDB2Context const &context, int remoteAgentId);
+    RtDB2Context &getContext() const;
 
     // Put a value for associated agent ID.
     template <typename T>
@@ -100,13 +101,12 @@ private:
     // Datamembers
     const int                          _agentId;
     boost::shared_ptr<RtDB2Compressor> _compressor;
+    const RtDB2Context                 _context;
 
     // Storage
     std::map<int, boost::shared_ptr<RtDB2Storage> > _storage;
     std::map<int, boost::shared_ptr<RtDB2Storage> > sync_; // TODO merge this with main storage? specialize RtDB2Item?
 
-protected:
-    const RtDB2Context                 _context;
 
 };
 

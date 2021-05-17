@@ -60,6 +60,11 @@ RtDB2::RtDB2(RtDB2Context const &context, int remoteAgentId)
     rdebug("constructed for agent=%d path=%s at p=%p", agentId, path.c_str(), this);
 }
 
+RtDB2Context &RtDB2::getContext() const
+{
+    return _context;
+}
+
 boost::shared_ptr<RtDB2Storage> RtDB2::getStorage(int agentId, bool isSync)
 {
     // select main storage
