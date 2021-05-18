@@ -43,7 +43,7 @@ public:
     // Context specifies the local agent that reads the data of the remote agent.
     // When remote agent and local agent are equal the local agent reads its own data.
     RtDB2(RtDB2Context const &context, int remoteAgentId);
-    RtDB2Context &getContext() const;
+    RtDB2Context const &getContext() const;
 
     // Put a value for associated agent ID.
     template <typename T>
