@@ -3,6 +3,12 @@
 # exit on error
 set -e
 
+# cleanup any existing database
+p=/tmp/rtdb2_storage # TODO: centralize; this is getting duplicated too much ...
+if [ -e $p ]; then
+    \rm -rf $p || exit 1
+fi
+
 # work in test directory
 cd "$(dirname "$0")"
 
