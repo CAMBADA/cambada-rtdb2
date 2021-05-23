@@ -9,6 +9,7 @@
 #include "compressor/RtDB2CompressorLZ4.h"
 #include "tprintf.hpp"
 
+#include "RtDB2Monitor.h"
 #include "RtDB2SyncPoint.h"
 
 void RtDB2::construct()
@@ -486,3 +487,26 @@ void RtDB2::decompress(std::string &s)
     }
 }
 
+const std::string AGENT("agent");
+
+std::vector<int> RtDB2::getAgentIds() const
+{
+    RtDB2Monitor& monitor = RtDB2Monitor::monitor(_context.getDatabasePath());
+    std::vector<std::string> agents = monitor.getAgents();
+
+    std::vector<int> result;
+    for (auto &agent : agents)
+    {
+        if (agent.rfind("agent_sync") != std::string::npos) {
+            // skip
+            continue;
+        }
+        std::size_t start = agent.rfind(AGENT);
+        if (start == 0) {
+            agent = agent.replace(0, AGENT.length(), "");
+            int value = std::stoi(agent);
+            result.push_back(value);
+        }
+    }
+    return result;
+}

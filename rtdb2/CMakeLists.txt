@@ -51,6 +51,7 @@ set(RTDB2_LIBRARY_SOURCES
         RtDB2.cpp RtDB2.h
         RtDB2Context.cpp RtDB2Context.h
         RtDB2Item.h
+        RtDB2Monitor.cpp RtDB2Monitor.h
         RtDB2Store.cpp RtDB2Store.h
         serializer/RtDB2Serializer.h compressor/RtDB2Compressor.h storage/RtDB2Storage.h
         RtDB2Configuration.cpp RtDB2Configuration.h
