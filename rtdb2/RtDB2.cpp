@@ -86,12 +86,7 @@ boost::shared_ptr<RtDB2Storage> RtDB2::getStorage(int agentId, bool isSync)
 std::string RtDB2::createAgentName(int agentId, bool isSync)
 {
     std::stringstream stream;
-    stream << DB_PREPEND_NAME;
-    if (isSync)
-    {
-        stream << "_sync";
-    }
-    stream << agentId;
+    stream << (isSync ? DB_SYNC_PREPEND_NAME : DB_PREPEND_NAME) << agentId;
     return stream.str();
 }
 
@@ -487,8 +482,6 @@ void RtDB2::decompress(std::string &s)
     }
 }
 
-const std::string AGENT("agent");
-
 std::vector<int> RtDB2::getAgentIds() const
 {
     RtDB2Monitor& monitor = RtDB2Monitor::monitor(_context.getDatabasePath());
@@ -497,13 +490,13 @@ std::vector<int> RtDB2::getAgentIds() const
     std::vector<int> result;
     for (auto &agent : agents)
     {
-        if (agent.rfind("agent_sync") != std::string::npos) {
+        if (agent.rfind(DB_SYNC_PREPEND_NAME) != std::string::npos) {
             // skip
             continue;
         }
-        std::size_t start = agent.rfind(AGENT);
+        std::size_t start = agent.rfind(DB_PREPEND_NAME);
         if (start == 0) {
-            agent = agent.replace(0, AGENT.length(), "");
+            agent = agent.replace(0, DB_PREPEND_NAME.length(), "");
             int value = std::stoi(agent);
             result.push_back(value);
         }
