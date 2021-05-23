@@ -266,8 +266,7 @@ int RtDB2::getFrame(RtDB2Frame &frame, RtDB2FrameSelection const &selection, int
     // Get data from all storages as serialized RtDB2Item objects
     // Tuple: agent, key, serialized_item
     std::vector<std::tuple<int, std::string, std::string>> data;
-    // TODO: how to visit only existing storages? iterating over assumed agents is not a nice solution ...
-    for (int agent = 0; agent < 10; ++agent)
+    for (auto &agent : getAgentIds())
     {
         auto storage = getStorage(agent, false);
         std::vector<std::pair<std::string, std::string>> tmpdata;
