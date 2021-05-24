@@ -39,9 +39,6 @@ public:
     
 private:
     bool                  _initialized = false;
-    boost::thread         _receiverThread;
-    boost::thread         _transmitterThread;
-    boost::thread         _diagnosticsThread;
     MulticastSocket       _socket;
     Statistics            _statistics;
     RtDB2                *_rtdb = NULL;
