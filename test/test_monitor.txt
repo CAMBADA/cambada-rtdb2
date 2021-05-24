@@ -1,0 +1,20 @@
+[INFO] Loading database named: default
+=== no agents, no dbpath ===
+=== agent 100 ===
+database: agent100
+agent: 100
+=== agents 100, 101 ===
+database: agent100
+database: agent101
+agent: 100
+agent: 101
+agent: 100
+agent: 101
+[INFO] Loading database named: default
+=== other client ===
+database: agent79
+agent: 79
+database: agent100
+database: agent101
+agent: 100
+agent: 101

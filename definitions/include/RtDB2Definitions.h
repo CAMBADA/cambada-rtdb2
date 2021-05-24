@@ -12,9 +12,11 @@
 #define SERIALIZE_DATA_FIXED(...)   MSGPACK_DEFINE(__VA_ARGS__)
 #define SERIALIZE_ENUM(enum_name)   MSGPACK_ADD_ENUM(enum_name)
 #define RTDB2_DEFAULT_PATH          "/tmp/rtdb2_storage"
-#define DB_PREPEND_NAME             "agent"
 #define RTDB2_CONFIGURATION_FILE    "config/rtdb2_configuration.xml"
 #define ZSTD2_DICTIONARY_FILE       "config/zstd_dictionary.dic"
+
+const std::string DB_PREPEND_NAME("agent");
+const std::string DB_SYNC_PREPEND_NAME("agent_sync");
 
 // Default defines that are possible to call
 // _FC means that it is possible to define the file and function caller

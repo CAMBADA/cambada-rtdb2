@@ -9,6 +9,7 @@
 #include "compressor/RtDB2CompressorLZ4.h"
 #include "tprintf.hpp"
 
+#include "RtDB2Monitor.h"
 #include "RtDB2SyncPoint.h"
 
 void RtDB2::construct()
@@ -85,12 +86,7 @@ boost::shared_ptr<RtDB2Storage> RtDB2::getStorage(int agentId, bool isSync)
 std::string RtDB2::createAgentName(int agentId, bool isSync)
 {
     std::stringstream stream;
-    stream << DB_PREPEND_NAME;
-    if (isSync)
-    {
-        stream << "_sync";
-    }
-    stream << agentId;
+    stream << (isSync ? DB_SYNC_PREPEND_NAME : DB_PREPEND_NAME) << agentId;
     return stream.str();
 }
 
@@ -270,8 +266,7 @@ int RtDB2::getFrame(RtDB2Frame &frame, RtDB2FrameSelection const &selection, int
     // Get data from all storages as serialized RtDB2Item objects
     // Tuple: agent, key, serialized_item
     std::vector<std::tuple<int, std::string, std::string>> data;
-    // TODO: how to visit only existing storages? iterating over assumed agents is not a nice solution ...
-    for (int agent = 0; agent < 10; ++agent)
+    for (auto &agent : getAgentIds())
     {
         auto storage = getStorage(agent, false);
         std::vector<std::pair<std::string, std::string>> tmpdata;
@@ -486,3 +481,26 @@ void RtDB2::decompress(std::string &s)
     }
 }
 
+std::set<int> RtDB2::getAgentIds() const
+{
+    RtDB2Monitor& monitor = RtDB2Monitor::monitor(_context.getDatabasePath());
+    std::set<std::string> entries = monitor.getPathEntries();
+
+    // Derive agents from path entries
+    std::set<int> result;
+    for (auto &entry : entries)
+    {
+        if (entry.rfind(DB_SYNC_PREPEND_NAME) != std::string::npos) {
+            // skip
+            continue;
+        }
+        std::size_t start = entry.rfind(DB_PREPEND_NAME);
+        if (start == 0) {
+            std::string myentry(entry);
+            myentry = myentry.replace(0, DB_PREPEND_NAME.length(), "");
+            int value = std::stoi(myentry);
+            result.insert(value);
+        }
+    }
+    return result;
+}

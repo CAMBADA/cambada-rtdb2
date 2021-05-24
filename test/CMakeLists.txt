@@ -19,6 +19,9 @@ target_link_libraries(test_configuration RtDB::rtdb)
 add_executable(test_context test_context.cpp)
 target_link_libraries(test_context RtDB::rtdb)
 
+add_executable(test_monitor test_monitor.cpp)
+target_link_libraries(test_monitor RtDB::rtdb)
+
 # tests
 add_test(test_basics ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh demo_basics)
 #add_test(test_multi_client ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh demo_multi_client) # broken!
@@ -30,4 +33,5 @@ add_test(test_configuration ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_config
     config/extensive_configuration_v2.xml
 )
 add_test(test_context ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_context)
+add_test(test_monitor ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_monitor)
 

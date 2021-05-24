@@ -85,6 +85,7 @@ public:
     // Temporary functions to compress/decompress, for use in stimulator / logger -- TODO: refactor all of it into this rtdb package
     void compress(std::string &s);
     void decompress(std::string &s);
+    std::set<int> getAgentIds() const;
 
 private:
     // Helpers
