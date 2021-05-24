@@ -7,7 +7,7 @@
 void showDatabases(std::string const &dbpath)
 {
     RtDB2Monitor& m = RtDB2Monitor::monitor(dbpath);
-    for (auto &p : m.getAgents())
+    for (auto &p : m.getPathEntries())
     {
         std::cout << "database: " << p << std::endl;
     }
