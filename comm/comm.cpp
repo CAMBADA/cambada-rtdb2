@@ -211,8 +211,15 @@ void Comm::run()
     }
     
     // start diagnostics thread, to report to stdout
-    tprintf("starting diagnostics thread");
-    _diagnosticsThread = boost::thread(&Comm::diagnostics, this);
+    if (settings.diagnostics)
+    {
+        tprintf("enabling diagnostics");
+        _diagnosticsThread = boost::thread(&Comm::diagnostics, this);
+    }
+    else
+    {
+        tprintf("diagnostics disabled");
+    }
     
     // join all
     _receiverThread.join();
@@ -220,7 +227,10 @@ void Comm::run()
     {
         _transmitterThread.join();
     }
-    _diagnosticsThread.join();
+    if (settings.diagnostics)
+    {
+        _diagnosticsThread.join();
+    }
 }
 
 void Comm::sigHandler(int sig) 
