@@ -8,7 +8,8 @@ class RtDB2Monitor
 {
 public:
     ~RtDB2Monitor();
-    std::set<std::string> getAgents();
+    // Retrieve current path entries
+    std::set<std::string> getPathEntries();
 
     static RtDB2Monitor& monitor(std::string const &path);
 
@@ -16,7 +17,7 @@ private:
     RtDB2Monitor(std::string const &path);
 
     const std::string _path;
-    std::set<std::string> _agents;
+    std::set<std::string> _path_entries;
     int _fd = -1; // inotify file descriptor
     int _wd = -1; // inotify watch descriptor
 

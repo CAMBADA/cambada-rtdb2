@@ -41,13 +41,13 @@ RtDB2Monitor::~RtDB2Monitor()
     (void) close(_fd);
 }
 
-std::set<std::string> RtDB2Monitor::getAgents()
+std::set<std::string> RtDB2Monitor::getPathEntries()
 {
     if (modified())
     {
-        _agents = collect();
+        _path_entries = collect();
     }
-    return _agents;
+    return _path_entries;
 }
 
 bool RtDB2Monitor::init()
@@ -64,7 +64,7 @@ bool RtDB2Monitor::init()
         //tprintf("RtDB2Monitor| inotify_add_watch failed for path: %s", _path.c_str());
         return false;
     }
-    _agents = collect();
+    _path_entries = collect();
     return true;
 }
 
