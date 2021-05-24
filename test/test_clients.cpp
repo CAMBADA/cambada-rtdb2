@@ -48,6 +48,7 @@ void startComm(int agent, std::string const &network, std::string const &configF
                            .withNetwork(network)
                            .build();
     Comm *comm = new Comm(ctx);
+    comm->settings.diagnostics = false;
     threads.push_back(comm->start());
 }
 

@@ -37,6 +37,7 @@ struct CommunicationSettings
     float frequency = 30;
     bool loopback = false;
     bool send = true;
+    bool diagnostics = true;
 };
 
 class RtDB2Configuration

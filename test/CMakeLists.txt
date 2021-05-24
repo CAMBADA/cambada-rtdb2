@@ -34,4 +34,5 @@ add_test(test_configuration ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_config
 )
 add_test(test_context ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_context)
 add_test(test_monitor ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_monitor)
+#add_test(test_clients ${CMAKE_CURRENT_LIST_DIR}/test_runner.sh test_clients) #disabled due to variable output
 

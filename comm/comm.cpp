@@ -195,15 +195,17 @@ void Comm::run()
         initialize();
     }
     
+    std::vector<boost::thread> threads;
+
     // start receiver thread
     tprintf("starting receiver thread");
-    _receiverThread = boost::thread(&Comm::receiver, this);
-    
+    threads.push_back(boost::thread(&Comm::receiver, this));
+
     // start transmitter thread at given frequency
     if (settings.send)
     {
         tprintf("starting transmitter thread");
-        _transmitterThread = boost::thread(&Comm::transmitter, this);
+        threads.push_back(boost::thread(&Comm::transmitter, this));
     }
     else
     {
@@ -211,16 +213,21 @@ void Comm::run()
     }
     
     // start diagnostics thread, to report to stdout
-    tprintf("starting diagnostics thread");
-    _diagnosticsThread = boost::thread(&Comm::diagnostics, this);
+    if (settings.diagnostics)
+    {
+        tprintf("starting diagnostics thread");
+        threads.push_back(boost::thread(&Comm::diagnostics, this));
+    }
+    else
+    {
+        tprintf("diagnostics disabled");
+    }
     
     // join all
-    _receiverThread.join();
-    if (settings.send)
+    for (auto &t : threads)
     {
-        _transmitterThread.join();
+        t.join();
     }
-    _diagnosticsThread.join();
 }
 
 void Comm::sigHandler(int sig) 
