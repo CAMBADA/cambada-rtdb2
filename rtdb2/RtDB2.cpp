@@ -481,12 +481,12 @@ void RtDB2::decompress(std::string &s)
     }
 }
 
-std::vector<int> RtDB2::getAgentIds() const
+std::set<int> RtDB2::getAgentIds() const
 {
     RtDB2Monitor& monitor = RtDB2Monitor::monitor(_context.getDatabasePath());
-    std::vector<std::string> agents = monitor.getAgents();
+    std::set<std::string> agents = monitor.getAgents();
 
-    std::vector<int> result;
+    std::set<int> result;
     for (auto &agent : agents)
     {
         if (agent.rfind(DB_SYNC_PREPEND_NAME) != std::string::npos) {
@@ -495,9 +495,10 @@ std::vector<int> RtDB2::getAgentIds() const
         }
         std::size_t start = agent.rfind(DB_PREPEND_NAME);
         if (start == 0) {
-            agent = agent.replace(0, DB_PREPEND_NAME.length(), "");
-            int value = std::stoi(agent);
-            result.push_back(value);
+            std::string myagent(agent);
+            myagent = myagent.replace(0, DB_PREPEND_NAME.length(), "");
+            int value = std::stoi(myagent);
+            result.insert(value);
         }
     }
     return result;

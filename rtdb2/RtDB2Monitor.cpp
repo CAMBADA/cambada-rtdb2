@@ -41,7 +41,7 @@ RtDB2Monitor::~RtDB2Monitor()
     (void) close(_fd);
 }
 
-std::vector<std::string> RtDB2Monitor::getAgents()
+std::set<std::string> RtDB2Monitor::getAgents()
 {
     if (modified())
     {
@@ -107,12 +107,12 @@ bool RtDB2Monitor::modified()
     return false;
 }
 
-std::vector<std::string> RtDB2Monitor::collect()
+std::set<std::string> RtDB2Monitor::collect()
 {
-    std::vector<std::string> result;
+    std::set<std::string> result;
     for (const auto & entry : fs::directory_iterator(_path))
     {
-        result.push_back(entry.path().leaf().string());
+        result.insert(entry.path().leaf().string());
     }
     return result;
 }
