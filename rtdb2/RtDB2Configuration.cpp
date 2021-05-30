@@ -22,9 +22,8 @@ void RtDB2Configuration::load_configuration()
     int result = RTDB2_SUCCESS;
     if (configFile_.compare("") == 0)
     {
-        // allow use of default database configuration without configuration file
-        result = network_.compare("") == 0 && database_.compare("default") == 0
-                ? RTDB2_SUCCESS : RTDB2_FAILED_PARSING_CONFIG_FILE;
+        // allow use of database without configuration file
+        result = network_.compare("") == 0 ? RTDB2_SUCCESS : RTDB2_FAILED_PARSING_CONFIG_FILE;
     }
     else
     {

@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     print_configuration(defaultContext.getConfiguration());
 
     std::cout << "=== No configuration ===" << std::endl;
-    RtDB2Context noConfigContext = RtDB2Context::Builder(0).withoutConfigFile().build();
+    RtDB2Context noConfigContext = RtDB2Context::Builder(0).withoutConfigFile().withDatabase("anydb").build();
     print_configuration(noConfigContext.getConfiguration());
 
     for (int i = 1; i < argc; i++)
@@ -30,20 +30,6 @@ int main(int argc, char **argv)
                                    .withConfigFileName(configFile)
                                    .build();
         print_configuration(context.getConfiguration());
-    }
-
-    std::cout << "=== Invalid configuration ===" << std::endl;
-    try
-    {
-        RtDB2Context noConfigContext = RtDB2Context::Builder(0)
-                            .withDatabase("otherdb")
-                            .withoutConfigFile()
-                            .build();
-        print_configuration(noConfigContext.getConfiguration());
-    }
-    catch (std::runtime_error &e)
-    {
-        std::cout << "Loading of invalid configuration prohibited" << std::endl;
     }
 
     // done
