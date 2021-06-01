@@ -98,6 +98,3 @@ Defaults:
 	Period: 1
 	Phase shift: 1
 
-=== Invalid configuration ===
-[WARNING] Invalid context. Configuration file is required for non-default database.
-Loading of invalid configuration prohibited
