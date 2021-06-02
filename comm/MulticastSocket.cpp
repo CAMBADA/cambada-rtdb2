@@ -214,7 +214,17 @@ bool MulticastSocket::autoSelectInterface()
     // ignore list
     std::set<std::string> ignore;
     ignore.insert("lo");
-    ignore.insert("enp0s31f6"); // Falcons robots: the port on top-side of CPU-box, located most inward, is reserved for multiCam
+    bool iscoach = false;
+    char buf[1024] = {0};
+    gethostname(buf, 1024);
+    iscoach = std::string(buf) == "coach";
+    // ugly HACK to survive within Falcons code context
+    // TODO: make this configurable via XML
+    // except for coach laptop, which actually must connect via enp0s31f6
+    if (!iscoach)
+    {
+        ignore.insert("enp0s31f6"); // Falcons robots: the port on top-side of CPU-box, located most inward, is reserved for multiCam
+    }
     
     // priority list: assume ad-hoc cable connection takes precedence over wifi
     std::set<std::string> prioritize;
