@@ -33,7 +33,7 @@ void RtDB2Configuration::load_configuration()
     }
     if (result != RTDB2_SUCCESS)
     {
-        throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse!");
+        throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse " + configFile_ + "!");
     }
 }
 

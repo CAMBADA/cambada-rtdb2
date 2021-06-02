@@ -3,7 +3,16 @@
     <Network loopback="false" send="true">
       <MulticastAddress>224.16.32.188</MulticastAddress>
       <MulticastPort>8011</MulticastPort>
-      <Interface>wlo1</Interface>
+      <Interface>auto</Interface>
+      <InterfacePriority>
+        <Name>wlo1</Name>
+        <Name>enp3s0</Name>
+        <Name>eth0</Name>
+      </InterfacePriority>
+      <InterfaceBlackList>
+        <Name>enp0s31f6</Name>
+        <Name>lo</Name>
+      </InterfaceBlackList>
       <Frequency>40</Frequency>
     </Network>
   </Networks>

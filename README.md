@@ -108,7 +108,9 @@ Network elements:
 
 * MulticastAddress (M) assigned group address according to MSL rules
 * MulticastPort    (M) port to use
-* Interface        (O) interface overrule, 'auto' (default) will resolve to available wireless adapter
+* Interface        (O) interface overrule, 'auto' (default) will resolve to available adapter
+* InterfacePriority  (O) in case 'auto' is used above, then given sequence is used to prioritize
+* InterfaceBlacklist (O) in case 'auto' is used above, then given interfaces are ignored
 * Frequency        (M) transmitter frequency (Hz)
 
 ### Databases
