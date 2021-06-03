@@ -9,10 +9,10 @@
         <Name>enp3s0</Name>
         <Name>eth0</Name>
       </InterfacePriority>
-      <InterfaceBlackList>
+      <InterfaceBlacklist>
         <Name>enp0s31f6</Name>
         <Name>lo</Name>
-      </InterfaceBlackList>
+      </InterfaceBlacklist>
       <Frequency>40</Frequency>
     </Network>
   </Networks>
