@@ -106,14 +106,14 @@
                   <xs:element name="MulticastAddress" type="xs:string"></xs:element>
                   <xs:element name="MulticastPort" type="xs:int"></xs:element>
                   <xs:element name="Interface" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
-                  <xs:element name="InterfacePriority" minOccurs="0" maxOccurs="1">
+                  <xs:element name="InterfacePriorityList" minOccurs="0" maxOccurs="1">
                         <xs:complexType>
                               <xs:sequence>
                                     <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                               </xs:sequence>
                         </xs:complexType>
                   </xs:element>
-                  <xs:element name="InterfaceBlacklist" minOccurs="0" maxOccurs="1">
+                  <xs:element name="InterfaceBlackList" minOccurs="0" maxOccurs="1">
                         <xs:complexType>
                               <xs:sequence>
                                     <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>

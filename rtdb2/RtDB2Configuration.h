@@ -33,6 +33,8 @@ struct CommunicationSettings
 {
     std::string multiCastIP = "";
     std::string interface = "auto";
+    std::vector<std::string> interfacePriorityList;
+    std::set<std::string> interfaceBlackList;
     int port = 8001;
     float frequency = 30;
     bool loopback = false;
