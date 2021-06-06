@@ -15,6 +15,7 @@ class RtDBCurses():
         self.ctrl_main = RtDBPanelController()
         self.ctrl_aux = RtDBPanelController()
         self.show_agent_specific = None # None = all, int = show particular agent id
+        self.show_key_filter = "" # only show keys starting with the specified filter
         self.show_details_item = None
         self.show_details_type = 0
         self.sort_item_selected = None  # current_item, selected_item
@@ -52,6 +53,22 @@ class RtDBCurses():
         try:
             self.stdscr.timeout(15)
             key = self.stdscr.getch()
+
+            # When the filter view is active, typing characters takes precedence over navigating through the UI
+            if self.show_details_type == 3 and key != -1:
+                key_chr = chr(key)
+
+                if key == curses.KEY_BACKSPACE:
+                    self.show_key_filter = self.show_key_filter[:-1]
+                    return 1
+
+                if key_chr == " ":
+                    key_chr = "_"
+
+                if key_chr.isalnum() or key_chr == "_":
+                    self.show_key_filter += key_chr.upper()
+                    return 1
+
             if key == ord('q') or key == ord('Q'):
                 raise KeyboardInterrupt()
             elif key in [curses.KEY_ENTER, ord('\n')]:
@@ -76,6 +93,9 @@ class RtDBCurses():
             elif key == curses.KEY_F3:
                 if not self.show_details_type:
                     self.show_details_type = 2
+            elif key == ord('/'):
+                if not self.show_details_type:
+                    self.show_details_type = 3
             elif key == curses.KEY_UP:
                 if self.show_details_type:
                     self.ctrl_aux.decrement_vertical()
@@ -152,6 +172,13 @@ class RtDBCurses():
             for idx in reversed(range(len(info_list))):
                 agent = info_list[idx].agent
                 if agent != self.show_agent_specific:
+                    del info_list[idx]
+
+        # filter on key?
+        if self.show_key_filter:
+            for idx in reversed(range(len(info_list))):
+                key = info_list[idx].key
+                if not key.startswith(self.show_key_filter):
                     del info_list[idx]
 
         info_list.sort(key=lambda element:
@@ -256,10 +283,20 @@ class RtDBCurses():
                 else:
                     self.addstr_wrapper(self.win_details, str(idx + 1) + ". " + value, color_white, idx + 4, 3)
 
+        elif self.show_details_type == 3:
+            self.display_bottom_bar([
+                ("Enter", "Close filter")
+            ])
+
+            self.win_details.resize(6, 40)
+            self.addstr_wrapper(self.win_details, "Key filter", color_title, 1, 4)
+            self.addstr_wrapper(self.win_details, self.show_key_filter, color_white, 3, 4)
+            self.panel_details.move(3, 7)
 
         else:
             self.display_bottom_bar([
                 ("F3", "Sort"),
+                ("/", "Filter keys"),
                 ("Enter", "Show details"),
                 ("Q", "Quit")
             ])
