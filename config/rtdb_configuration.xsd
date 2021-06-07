@@ -19,6 +19,8 @@
                               </xs:sequence>
                         </xs:complexType>
                   </xs:element>
+                  <xs:element name="InterfacePriorityList" type="valueListType" minOccurs="0" maxOccurs="1"/>
+                  <xs:element name="InterfaceBlackList" type="valueListType" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
             <xs:sequence>
                   <xs:element name="General">
@@ -106,20 +108,6 @@
                   <xs:element name="MulticastAddress" type="xs:string"></xs:element>
                   <xs:element name="MulticastPort" type="xs:int"></xs:element>
                   <xs:element name="Interface" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
-                  <xs:element name="InterfacePriorityList" minOccurs="0" maxOccurs="1">
-                        <xs:complexType>
-                              <xs:sequence>
-                                    <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-                              </xs:sequence>
-                        </xs:complexType>
-                  </xs:element>
-                  <xs:element name="InterfaceBlackList" minOccurs="0" maxOccurs="1">
-                        <xs:complexType>
-                              <xs:sequence>
-                                    <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-                              </xs:sequence>
-                        </xs:complexType>
-                  </xs:element>
                   <xs:element name="Frequency" type="xs:int"></xs:element>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string" default="default"></xs:attribute>
@@ -127,4 +115,8 @@
             <xs:attribute name="loopback" type="xs:boolean" default="false"></xs:attribute>
             <xs:attribute name="send" type="xs:boolean" default="true"></xs:attribute>
       </xs:complexType>
+
+      <xs:simpleType name="valueListType">
+            <xs:list itemType="xs:string"/>
+      </xs:simpleType>
 </xs:schema>
