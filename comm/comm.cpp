@@ -35,6 +35,9 @@ Comm::Comm(RtDB2Context const &context)
 {
     // retrieve settings
     settings = context_.getConfiguration().get_communication_settings();
+    // forward the interface configuration lists
+    _socket.interfaceBlackList = settings.interfaceBlackList;
+    _socket.interfacePriorityList = settings.interfacePriorityList;
     // setup signal handler for (somewhat) graceful shutdown
     if (signal(SIGINT, Comm::sigHandler) == SIG_ERR) 
     {

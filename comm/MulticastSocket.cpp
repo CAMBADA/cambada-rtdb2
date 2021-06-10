@@ -39,11 +39,11 @@ bool MulticastSocket::resolve()
         {
             return false;
         }
-        fprintf(stderr, "MulticastSocket::resolve(interface = \"auto\" -> \"%s\")\n", _interfaceName.c_str());
+        fprintf(stdout, "MulticastSocket::resolve(interface = \"auto\" -> \"%s\")\n", _interfaceName.c_str());
     }
     else
     {
-        fprintf(stderr, "MulticastSocket::resolve(interface = \"%s\")\n", _interfaceName.c_str());
+        fprintf(stdout, "MulticastSocket::resolve(interface = \"%s\")\n", _interfaceName.c_str());
     }
 
     int fd;
@@ -211,31 +211,25 @@ bool MulticastSocket::autoSelectInterface()
     struct ifaddrs *ifa = NULL;
     getifaddrs(&ifAddrStruct);
 
-    // ignore list
-    std::set<std::string> ignore;
-    ignore.insert("lo");
-    ignore.insert("enp0s31f6"); // Falcons robots: the port on top-side of CPU-box, located most inward, is reserved for multiCam
-    
-    // priority list: assume ad-hoc cable connection takes precedence over wifi
-    std::set<std::string> prioritize;
-    prioritize.insert("enp3s0"); // Falcons robots
-    prioritize.insert("eth0"); // Falcons devlaptlops
-    
-    // TODO: make these lists configurable via XML?
-    
     // first select from priority list, then select whichever remains
     for (int priorityLoop = 0; priorityLoop <= 1; ++priorityLoop)
     {
         for (ifa = ifAddrStruct; (ifa != NULL); ifa = ifa->ifa_next)
         {
             // filter IPV4 addresses and apply ignore list
-            if ((ifa->ifa_addr->sa_family == AF_INET) && (!ignore.count(ifa->ifa_name)))
+            if ((ifa->ifa_addr->sa_family == AF_INET) && (!interfaceBlackList.count(ifa->ifa_name)))
             {
-                if (priorityLoop && prioritize.count(ifa->ifa_name))
+                if (priorityLoop)
                 {
                     // select first one in prio list
-                    _interfaceName = ifa->ifa_name;
-                    return true;
+                    for (auto interface: interfacePriorityList)
+                    {
+                        if (interface == ifa->ifa_name)
+                        {
+                            _interfaceName = ifa->ifa_name;
+                            return true;
+                        }
+                    }
                 }
                 if (!priorityLoop)
                 {

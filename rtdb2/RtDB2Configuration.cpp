@@ -32,8 +32,8 @@ void RtDB2Configuration::load_configuration()
         mtx.unlock();
     }
     if (result != RTDB2_SUCCESS)
-    {
-        throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse!");
+    { 
+        throw std::runtime_error("Error while creating a configuration for the RTDB - Failed to parse " + configFile_ + "!");
     }
 }
 
@@ -68,6 +68,20 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                     communication_settings_.frequency = network->Frequency();
                     communication_settings_.interface =
                         network->Interface().present() ? network->Interface().get() : "auto";
+                    if (config->InterfaceBlackList().present())
+                    {
+                        for (auto elem: config->InterfacePriorityList().get())
+                        {
+                            communication_settings_.interfacePriorityList.push_back(elem);
+                        }
+                    }
+                    if (config->InterfaceBlackList().present())
+                    {
+                        for (auto elem: config->InterfaceBlackList().get())
+                        {
+                            communication_settings_.interfaceBlackList.insert(elem);
+                        }
+                    }
                     communication_settings_.loopback = network->loopback();
                     communication_settings_.port = network->MulticastPort();
                     communication_settings_.send = network->send();

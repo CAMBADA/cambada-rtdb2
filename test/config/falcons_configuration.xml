@@ -1,0 +1,126 @@
+<!-- See the README on https://github.com/RoboCup-MSL/rtdb2/tree/rtdb3 -->
+
+<!--
+Falcons deployment:
+
+use case: wireless
+* dev laptop JFEI: interface = wlp0s20f3
+* coach laptop: interface = wlo1
+* robot: interface = wlp2s0
+
+use case: wired
+* dev laptop JFEI: interface = enp12s0
+* coach laptop: interface = enp0s31f6
+* robot: interface = enp3s0
+
+note: robots are connected with MultiCam via enp0s31f6
+note: there is a script running on robots to bring wifi radio down when ethernet cable is connected on enp3s0 (for testing in venue)
+note: there might be more custom dev laptop configurations
+
+=> so we use the 'auto' interface selection feature
+
+-->
+
+<RtDB2Configuration>
+  <Networks>
+    <Network loopback="false" send="true"> <!-- default==Falcons -->
+      <MulticastAddress>224.16.32.74</MulticastAddress>
+      <MulticastPort>8001</MulticastPort>
+      <Interface>auto</Interface>
+      <Frequency>30</Frequency>
+    </Network>
+    <Network name="MTP" loopback="false" send="true"> 
+      <MulticastAddress>224.16.32.56</MulticastAddress>
+      <MulticastPort>9001</MulticastPort>
+      <Interface>auto</Interface>
+      <Frequency>30</Frequency>
+    </Network>
+    <Network name="refbox" loopback="false" send="false"> 
+      <MulticastAddress>224.16.32.201</MulticastAddress>
+      <MulticastPort>18001</MulticastPort>
+      <Interface>auto</Interface>
+      <Frequency>10</Frequency>
+    </Network>
+  </Networks>
+  <Databases>
+    <Database name="MTP">
+      <Compression type="zstd"/>
+      <KeyDefaults shared="true" period="1" phase="0" timeout="1.0"/>
+      <Keys>
+        <Key id="MTP"/>
+      </Keys>
+    </Database>
+    <Database name="refbox">
+      <Compression type="zstd"/>
+      <KeyDefaults/>
+      <Keys>
+        <Key id="COMMAND"/>
+        <Key id="TARGETTEAM"/>
+      </Keys>
+    </Database>
+    <Database> <!-- default == Falcons -->
+      <Compression type="zstd"/>
+      <KeyDefaults shared="false" period="1" phase="0" timeout="1.0"/>
+      <Keys>
+        <Key id="BALL_CANDIDATES" shared="false"/>
+        <Key id="OBSTACLE_CANDIDATES" shared="false"/>
+        <Key id="LOCALIZATION_CANDIDATES" shared="true"/>
+        <Key id="VIS_BALL_POSSESSION" shared="false"/>
+        <Key id="BALL_CANDIDATES_FCS" shared="true"/>
+        <Key id="OBSTACLE_CANDIDATES_FCS" shared="true"/>
+        <Key id="ROBOT_STATE" shared="true"/>
+        <Key id="BALLS" shared="true"/>
+        <Key id="OBSTACLES" shared="true"/>
+        <Key id="FORBIDDEN_AREAS" shared="false"/>
+        <Key id="ACTION" shared="true"/>
+        <Key id="ACTION_RESULT" shared="true"/>
+        <Key id="MOTION_SETPOINT" shared="true"/>
+        <Key id="ROBOT_VELOCITY_SETPOINT" shared="true"/>
+        <Key id="MOTOR_VELOCITY_SETPOINT" shared="false"/>
+        <Key id="BALLHANDLERS_SETPOINT" shared="true"/>
+        <Key id="BALLHANDLERS_MOTOR_SETPOINT" shared="false"/>
+        <Key id="SHOOT_SETPOINT" shared="true"/>
+        <Key id="KICKER_SETPOINT" shared="true"/>
+        <Key id="MOTOR_FEEDBACK" shared="false"/>
+        <Key id="ROBOT_DISPLACEMENT_FEEDBACK" shared="false"/>
+        <Key id="ROBOT_VELOCITY_FEEDBACK" shared="false"/>
+        <Key id="BALLHANDLERS_FEEDBACK" shared="true"/>
+        <Key id="BALLHANDLERS_BALL_POSSESSION" shared="false"/>
+        <Key id="REFBOX_CONFIG" shared="true" period="100" timeout="3600.0"/>
+        <Key id="MATCH_STATE" shared="true"/>
+        <Key id="INPLAY_FEEDBACK" shared="false"/>
+        <Key id="EVENT_LIST" shared="true"/>
+        <Key id="DIAG_TEAMPLAY" period="5" shared="true"/>
+        <Key id="DIAG_WORLDMODEL_SHARED" period="5" shared="true"/>
+        <Key id="DIAG_WORLDMODEL_LOCAL" shared="false"/>
+        <Key id="DIAG_PATHPLANNING" period="5" shared="true"/>
+        <Key id="DIAG_BALLHANDLING" period="5" shared="true"/>
+        <Key id="DIAG_PERIPHERALSINTERFACE" period="5" shared="true"/>
+        <Key id="DIAG_HEALTH_SLOW" shared="true"/>
+        <Key id="DIAG_HEALTH_FAST" shared="true"/>
+        <Key id="ROBOT_ROLES" shared="true"/>
+        <Key id="INTENTION" shared="true"/>
+        <Key id="TP_OVERRIDE_STATE" shared="false"/>
+        <Key id="TP_OVERRIDE_RESULT" shared="false"/>
+        <Key id="CONFIG_WORLDMODEL" shared="false"/>
+        <Key id="CONFIG_HEARTBEATCOACH" shared="false"/>
+        <!-- configuration items are shared; logger / comm should only pick them up when changed (which is rare) -->
+        <Key id="CONFIG_PATHPLANNING" shared="true"/>
+        <Key id="CONFIG_BALLHANDLING" shared="true"/>
+        <Key id="CONFIG_TEAMPLAY" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_1" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_2" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_3" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_4" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_5" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_6" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_7" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_8" shared="true"/>
+        <Key id="JOYSTICK_CONTROL_9" shared="true"/>
+        <Key id="DEBUG_TRUE_BALL" shared="false"/>
+      </Keys>
+    </Database>
+  </Databases>
+  <InterfacePriorityList>wlo1 enp3s0 eth0</InterfacePriorityList>
+  <InterfaceBlackList>enp0s31f6 lo</InterfaceBlackList>
+</RtDB2Configuration>

@@ -85,10 +85,12 @@ RtDB2 rtdbRemote2(ctx, 2);
 
 ## Configuration
 
-RtDB configuration consists of two independent sections:
+RtDB configuration consists of these independent sections:
 
-* Networks  - this section is used by the comm process
-* Databases - this section is used by the client process
+* Networks              (M) this section is used by the comm process
+* Databases             (M) this section is used by the client process
+* InterfacePriorityList (O) in case 'auto' is used as Interface, then given sequence is used to prioritize
+* InterfaceBlackList    (O) in case 'auto' is used as Interface, then given interfaces are ignored
 
 ### Networks
 
@@ -108,7 +110,7 @@ Network elements:
 
 * MulticastAddress (M) assigned group address according to MSL rules
 * MulticastPort    (M) port to use
-* Interface        (O) interface overrule, 'auto' (default) will resolve to available wireless adapter
+* Interface        (O) interface overrule, 'auto' (default) will resolve to available adapter, thereby taking into account the InterfacePriorityList and InterfaceBlackList when specified
 * Frequency        (M) transmitter frequency (Hz)
 
 ### Databases
@@ -166,6 +168,8 @@ Example configuration:
       </Keys>
     </Database>
   </Databases>
+  <InterfacePriorityList>wlo1 enp3s0 eth0</InterfacePriorityList>
+  <InterfaceBlackList>enp0s31f6 lo</InterfaceBlackList>
 </RtDB2Configuration>
 ```
 

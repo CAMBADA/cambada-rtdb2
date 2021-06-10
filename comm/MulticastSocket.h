@@ -5,6 +5,8 @@
 
 #include <arpa/inet.h>
 #include <string>
+#include <set>
+#include <vector>
 
 class MulticastSocket
 {
@@ -20,6 +22,9 @@ class MulticastSocket
     int getSocket() const { return _socket; }
     std::string getInterface() const { return _interfaceName; }
     std::string getIpAddress() const { return _address; }
+
+    std::vector<std::string> interfacePriorityList;
+    std::set<std::string> interfaceBlackList;
 
   private:
     int         _port;

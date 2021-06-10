@@ -430,8 +430,10 @@ class RtDB2MultiStore():
         self.dbname = "default" # TODO: make configurable?
         self.agentStores = {}
         for agent in self.agents:
-            storage_path = os.path.join(path, agent, self.dbname)
-            self.agentStores[agent] = RtDB2Store(storage_path, readonly)
+            # workaround for the database symlink trick
+            if not os.path.islink(os.path.join(path, agent)):
+                storage_path = os.path.join(path, agent, self.dbname)
+                self.agentStores[agent] = RtDB2Store(storage_path, readonly)
 
     def closeAll(self):
         for store in self.agentStores.values():
