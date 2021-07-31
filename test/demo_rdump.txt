@@ -3,3 +3,8 @@ agent key                            type   age    value
     2 TEST_FLOAT                     local     1s  1.0
     2 TEST_INT                       local     1s  37
     2 TEST_STRING                    local     1s  hi!!
+agent key                            type   age    value
+  711 ROBOT_DATA                     shared    1s  {'pos': [-5.429999828338623, 3.140000104904175, 0.0], 'alive': False, 'intention': 'SCORE'}
+  711 TEST_FLOAT                     shared    1s  1.0
+  711 TEST_INT                       shared    1s  37
+  711 TEST_STRING                    shared    1s  hi!!

@@ -25,11 +25,11 @@ done
 ./demo_basics > /dev/null
 
 # rdump
-rdump | diff - demo_rdump.txt
+(rdump; rdump -d otherdb) |& diff - demo_rdump.txt
 
 # rget
-rget -a 2 ROBOT_DATA | diff - demo_rget.txt
+(rget -a 2 ROBOT_DATA; rget -d otherdb -a 711 ROBOT_DATA) |& diff - demo_rget.txt
 
 # rput
-rput -a 2 TEST_FLOAT 7.0
+rput -a 2 TEST_FLOAT 7.0; rput -d otherdb -a 711 TEST_FLOAT 17.3
 

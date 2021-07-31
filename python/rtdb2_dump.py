@@ -16,10 +16,11 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--agent', help='agent IDs to use, default all', type=int, nargs='*', default=[])
     parser.add_argument('-k', '--key', help='keys to display, default all', type=str, nargs='*', default=[])
     parser.add_argument('-p', '--path', help='database path to use', type=str, default=RTDB2_DEFAULT_PATH)
+    parser.add_argument('-d', '--database', help='database name to use', type=str, default="default")
     args = parser.parse_args()
 
     # Create instance of RtDB2Store and get data
-    rtdb2Store = RtDB2MultiStore(args.path)
+    rtdb2Store = RtDB2MultiStore(args.path, args.database)
     items = rtdb2Store.getAllRtDBItems()
 
     # Sort items

@@ -15,12 +15,13 @@ if __name__ == "__main__":
     parser     = argparse.ArgumentParser(description=descriptionTxt, epilog=exampleTxt,  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-a', '--agent', help='agent ID to use', type=int, default=rtdb2tools.guessAgentId())
     parser.add_argument('-p', '--path', help='database path to use', type=str, default=RTDB2_DEFAULT_PATH)
+    parser.add_argument('-d', '--database', help='database name to use', type=str, default="default")
     parser.add_argument('key', help='RtDB key to write to')
     parser.add_argument('value', help='the value to put as string, should be mappable to target struct')
     args = parser.parse_args()
 
     # Create instance of RtDB2Store and read databases from disk
-    p = os.path.join(args.path, str(args.agent), 'default')
+    p = os.path.join(args.path, str(args.agent), args.database)
     rtdb2Store = RtDB2Store(p, False) # don't start in read-only
 
     # This put operation should try to preserve attributes, like shared
