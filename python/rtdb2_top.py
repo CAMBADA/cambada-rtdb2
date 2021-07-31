@@ -14,7 +14,7 @@ def main():
     exampleTxt = ''
     parser     = argparse.ArgumentParser(description=descriptionTxt, epilog=exampleTxt)
     parser.add_argument('-p', '--path', help='database path to use', type=str, default=RTDB2_DEFAULT_PATH)
-    parser.add_argument('-d', '--database', help='database name to use', type=str, default="default")
+    parser.add_argument('-d', '--database', help='database name to use', type=str, default='default')
     args = parser.parse_args()
 
     # setup

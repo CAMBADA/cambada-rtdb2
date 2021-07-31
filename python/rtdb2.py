@@ -419,7 +419,7 @@ class RtDB2MultiStore():
     """
     A RtDB2MultiStore is used for rtop and rdump to show an entire team in one view.
     """
-    def __init__(self, path, dbname="default", readonly=True):
+    def __init__(self, path, dbname='default', readonly=True):
         # check base folder exists
         if not os.path.isdir(path):
             raise Exception("folder not found: " + path)

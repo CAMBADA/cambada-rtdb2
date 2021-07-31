@@ -25,7 +25,7 @@ Example: rtdb2_get.py -a 2 DIAG_WORLDMODEL_LOCAL -x "['balls'][0]['result']"
     parser.add_argument('-a', '--agent', help='agent ID to use', type=int, default=rtdb2tools.guessAgentId())
     parser.add_argument('-s', '--serialized', help='also show serialized string (as hexdump)', action='store_true')
     parser.add_argument('-p', '--path', help='database path to use', type=str, default=RTDB2_DEFAULT_PATH)
-    parser.add_argument('-d', '--database', help='database name to use', type=str, default="default")
+    parser.add_argument('-d', '--database', help='database name to use', type=str, default='default')
     parser.add_argument('-x', '--expression', help='evaluate expression, useful to fetch a specific element', type=str)
     parser.add_argument('key', help='RtDB key to read')
     args = parser.parse_args()

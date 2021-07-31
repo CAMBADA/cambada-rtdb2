@@ -18,7 +18,7 @@ if __name__ == "__main__":
     # TODO: zero-latency '--onchange' option requires RTDB wait_for_put, currently not implemented
     parser.add_argument('-s', '--showonce', help='filter duplicates, show stale items once', action='store_true')
     parser.add_argument('-p', '--path', help='database path to use', type=str, default=rtdb2tools.RTDB2_DEFAULT_PATH)
-    parser.add_argument('-d', '--database', help='database name to use', type=str, default="default")
+    parser.add_argument('-d', '--database', help='database name to use', type=str, default='default')
     parser.add_argument('key', help='RtDB key to read')
     args = parser.parse_args()
 
