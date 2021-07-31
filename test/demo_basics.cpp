@@ -43,18 +43,24 @@ int main(int argc, char **argv)
     // no argument parsing
 
     // setup a RTDB database (default)
-    int agentId = 2; // arbitrary
-    RtDB2Context ctx = RtDB2Context::Builder(agentId).build();
+    int agentId0 = 2; // arbitrary
+    RtDB2Context ctx0 = RtDB2Context::Builder(agentId0).build();
+
+    // setup a RTDB database (otherdb)
+    int agentId1 = 711; // arbitrary
+    RtDB2Context ctx1 = RtDB2Context::Builder(agentId1).withoutConfigFile().withDatabase("otherdb").build();
 
     // write data
-    writeRtDB(ctx, true, 1.1, 2.5, std::string("WIN"));
+    writeRtDB(ctx0, true, 1.1, 2.5, std::string("WIN"));
+    writeRtDB(ctx1, false, -5.43, 3.14, std::string("SCORE"));
 
     // sleep a bit
     std::cout << "sleeping a bit ..." << std::endl;
     sleep(1);
 
     // read data
-    readRtDB(ctx);
+    readRtDB(ctx0);
+    readRtDB(ctx1);
 
     // done
     return 0;
