@@ -4,21 +4,16 @@
 // test structs
 #include "robot.hpp"
 
-int main(int argc, char **argv)
+void writeRtDB(const RtDB2Context& ctx, bool alive, float x, float y, const std::string& intention)
 {
-    // no argument parsing
-
-    // setup a RTDB database
-    int agentId = 2; // arbitrary
-    RtDB2Context ctx = RtDB2Context::Builder(agentId).build();
     auto rtdb = new RtDB2(ctx);
 
     // write a struct
     Robot robot_put;
-    robot_put.alive = true;
-    robot_put.pos.x = 1.1;
-    robot_put.pos.y = 2.5;
-    robot_put.intention = "WIN";
+    robot_put.alive = alive;
+    robot_put.pos.x = x;
+    robot_put.pos.y = y;
+    robot_put.intention = intention;
     std::cout << "writing struct data into RTDB:" << std::endl;
     std::cout << robot_put << std::endl;
     rtdb->put("ROBOT_DATA", &robot_put);
@@ -30,20 +25,36 @@ int main(int argc, char **argv)
     rtdb->put("TEST_FLOAT", &f);
     std::string s = "hi!!";
     rtdb->put("TEST_STRING", &s);
-    
-    // sleep a bit
-    std::cout << "sleeping a bit ..." << std::endl;
-    sleep(1);
+}
+
+void readRtDB(const RtDB2Context& ctx)
+{
+    auto rtdb = new RtDB2(ctx);
 
     // read a struct
     Robot robot_get;
     rtdb->get("ROBOT_DATA", &robot_get);
     std::cout << "reading struct data from RTDB:" << std::endl;
     std::cout << robot_get << std::endl;
+}
 
-    // TODO: a built-in recursive json formatter would be nice?
-    // then we could just dump the entire struct:
-    //std::cout << robot_get << std::endl;
+int main(int argc, char **argv)
+{
+    // no argument parsing
+
+    // setup a RTDB database (default)
+    int agentId = 2; // arbitrary
+    RtDB2Context ctx = RtDB2Context::Builder(agentId).build();
+
+    // write data
+    writeRtDB(ctx, true, 1.1, 2.5, std::string("WIN"));
+
+    // sleep a bit
+    std::cout << "sleeping a bit ..." << std::endl;
+    sleep(1);
+
+    // read data
+    readRtDB(ctx);
 
     // done
     return 0;
