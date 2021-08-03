@@ -39,7 +39,7 @@ class RtDB2
 
 public:
     // Context specifies the local agent that reads and writes data
-    RtDB2(RtDB2Context const &context);
+    RtDB2(RtDB2Context const &context, bool clearHistory = false);
     // Context specifies the local agent that reads the data of the remote agent.
     // When remote agent and local agent are equal the local agent reads its own data.
     RtDB2(RtDB2Context const &context, int remoteAgentId);
@@ -98,6 +98,7 @@ private:
     int insertItem(std::string const &key, int agentId, RtDB2Item const &item);
     std::string createAgentName(int agentId, bool isSync);
     boost::shared_ptr<RtDB2Storage> getStorage(int agentId, bool isSync);
+    void clearHistory();
 
     // Datamembers
     const int                          _agentId;

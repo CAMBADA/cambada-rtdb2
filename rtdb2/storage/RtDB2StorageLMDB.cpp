@@ -190,6 +190,30 @@ int RtDB2LMDB::fetch_all_data(std::vector<std::pair<std::string, std::string> >&
     return 0;
 }
 
+int RtDB2LMDB::clear_all_data() {
+    if (init_operation(true) != RTDB2_SUCCESS)
+        return RTDB2_KEY_NOT_FOUND;
+
+    MDB_txn *txn;
+    MDB_cursor *cursor;
+    MDB_val key, data;
+
+    int err = mdb_txn_begin(env_, NULL, 0, &txn);
+    if (err != 0)
+    {
+        // TODO show details, link, ... better use std exceptions?
+        RTDB_ERROR("RtDB2LMDB::fetch_all_data/mdb_txn_begin returned error code %d", err);
+        return RTDB2_INTERNAL_MDB_ERROR;
+    }
+    mdb_cursor_open(txn, dbi_, &cursor);
+    while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == 0) {
+        mdb_del(txn, dbi_, &key, NULL);
+    }
+    mdb_cursor_close(cursor);
+    mdb_txn_commit(txn);
+    return 0;
+}
+
 // Append syncPoint to the list under 'key' in this class' LMDB
 int RtDB2LMDB::append_to_sync_list(const std::string& key, const RtDB2SyncPoint& syncPoint) {
     if (init_operation(false) != RTDB2_SUCCESS)
