@@ -219,7 +219,7 @@ bool MulticastSocket::autoSelectInterface()
             // filter IPV4 addresses and apply ignore list
             if ((ifa->ifa_addr->sa_family == AF_INET) && (!interfaceBlackList.count(ifa->ifa_name)))
             {
-                if (priorityLoop)
+                if (priorityLoop == 0)
                 {
                     // select first one in prio list
                     for (auto interface: interfacePriorityList)
@@ -231,7 +231,7 @@ bool MulticastSocket::autoSelectInterface()
                         }
                     }
                 }
-                if (!priorityLoop)
+                else
                 {
                     // select first one after prio options are exhausted
                     _interfaceName = ifa->ifa_name;
