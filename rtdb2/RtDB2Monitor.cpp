@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include <string>
 #include <sys/inotify.h>
 #include <boost/filesystem.hpp>
