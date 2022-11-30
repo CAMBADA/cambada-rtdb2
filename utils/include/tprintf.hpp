@@ -19,17 +19,17 @@
 #define _INCLUDED_TPRINTF_HPP_
 
 #include <cstdarg>
+#include <cstdio>
+#include <memory>
 
 // uncomment to suppress all output
 //#define TPRINTF_DISABLED
 
-// helpers
-void _tprintf_start();
-void _tprintf_end();
+void _tprintf(const char *fmt, ...);
 
 // tprintf macro
 #ifndef TPRINTF_DISABLED
-    #define tprintf(fmt, ...) { _tprintf_start(); printf(fmt, ##__VA_ARGS__); _tprintf_end(); }
+    #define tprintf(fmt, ...) { _tprintf(fmt, ##__VA_ARGS__); }
 #else
     #define tprintf(...) ((void)0)
 #endif
