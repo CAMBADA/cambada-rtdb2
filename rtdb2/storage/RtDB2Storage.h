@@ -17,6 +17,7 @@ public:
     virtual int fetch(std::string key, std::string& value) = 0;
     virtual int fetch_all_data(std::vector<std::pair<std::string, std::string> >& values) = 0;
     virtual int fetch_and_clear(std::string key, std::string& value) = 0;
+    virtual int clear_all_data() = 0;
 
     virtual int append_to_sync_list(const std::string& key, const RtDB2SyncPoint& syncPoint) = 0;
     virtual int get_and_clear_sync_list(const std::string& key, std::vector<RtDB2SyncPoint>& list) = 0;

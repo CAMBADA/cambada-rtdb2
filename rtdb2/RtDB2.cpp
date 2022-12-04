@@ -42,13 +42,17 @@ void RtDB2::construct()
     }
 }
 
-RtDB2::RtDB2(RtDB2Context const &context)
+RtDB2::RtDB2(RtDB2Context const &context, bool isClearHistory)
 :
     _agentId(context.getAgentId()),
     _compressor(NULL),
     _context(context)
 {
     construct();
+
+    if (isClearHistory) {
+        clearHistory();
+    }
 }
 
 RtDB2::RtDB2(RtDB2Context const &context, int remoteAgentId)
@@ -503,4 +507,13 @@ std::set<int> RtDB2::getAgentIds() const
         }
     }
     return result;
+}
+
+void RtDB2::clearHistory()
+{
+    for (auto &agent : getAgentIds())
+    {
+        auto storage = getStorage(agent, false);
+        storage->clear_all_data();
+    }
 }
