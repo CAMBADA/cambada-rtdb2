@@ -3,3 +3,8 @@ shared: False
   list: False
  value: {'pos': [1.100000023841858, 2.5, 0.0], 'alive': True, 'intention': 'WIN'}
 
+   age: 1s
+shared: True
+  list: False
+ value: {'pos': [-5.429999828338623, 3.140000104904175, 0.0], 'alive': False, 'intention': 'SCORE'}
+

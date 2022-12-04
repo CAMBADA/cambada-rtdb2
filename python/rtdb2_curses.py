@@ -20,7 +20,8 @@ class RtDBCurses():
         self.show_details_type = 0
         self.sort_item_selected = None  # current_item, selected_item
 
-        self.current_sort_order = ['Agent', 'Key', 'Shared', 'Age', 'Size']
+        self.current_sort_order = ['Agent', 'Key', 'Shared', 'Size']
+        # cannot sort on 'Age' at the moment, because functools.reduce needs it to be a property instead of a method
 
         self.win_details = curses.newwin(0, 0, 0, 0) # h,l,x,y
         self.win_details.addstr(2, 2, "Panel")

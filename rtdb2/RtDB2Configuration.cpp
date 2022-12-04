@@ -68,7 +68,7 @@ int RtDB2Configuration::parse_configuration(std::string file_path)
                     communication_settings_.frequency = network->Frequency();
                     communication_settings_.interface =
                         network->Interface().present() ? network->Interface().get() : "auto";
-                    if (config->InterfaceBlackList().present())
+                    if (config->InterfacePriorityList().present())
                     {
                         for (auto elem: config->InterfacePriorityList().get())
                         {

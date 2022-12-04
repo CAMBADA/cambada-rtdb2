@@ -153,7 +153,7 @@ class RtDB2Instance():
         # now: local/shared has become attribute of items in agentX
         # sync database remains separated though
         self.name = name
-        self.agent = int(name[-1])
+        self.agent = int(name.replace('agent', '').replace('_sync', ''))
 
         # Open database connection
         try:
@@ -419,7 +419,7 @@ class RtDB2MultiStore():
     """
     A RtDB2MultiStore is used for rtop and rdump to show an entire team in one view.
     """
-    def __init__(self, path, readonly=True):
+    def __init__(self, path, dbname='default', readonly=True):
         # check base folder exists
         if not os.path.isdir(path):
             raise Exception("folder not found: " + path)
@@ -427,12 +427,11 @@ class RtDB2MultiStore():
         # find agents
         self.agents = os.listdir(path)
         # setup instances
-        self.dbname = "default" # TODO: make configurable?
         self.agentStores = {}
         for agent in self.agents:
             # workaround for the database symlink trick
             if not os.path.islink(os.path.join(path, agent)):
-                storage_path = os.path.join(path, agent, self.dbname)
+                storage_path = os.path.join(path, agent, dbname)
                 self.agentStores[agent] = RtDB2Store(storage_path, readonly)
 
     def closeAll(self):

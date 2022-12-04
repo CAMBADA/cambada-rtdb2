@@ -4,9 +4,19 @@ alive = 1
 pos = (1.1, 2.5, 0)
 intention = WIN
 
+writing struct data into RTDB:
+alive = 0
+pos = (-5.43, 3.14, 0)
+intention = SCORE
+
 sleeping a bit ...
 reading struct data from RTDB:
 alive = 1
 pos = (1.1, 2.5, 0)
 intention = WIN
+
+reading struct data from RTDB:
+alive = 0
+pos = (-5.43, 3.14, 0)
+intention = SCORE
 
