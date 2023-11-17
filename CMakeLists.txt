@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(RtDB LANGUAGES CXX)
 
+cmake_policy(SET CMP0077 NEW) # option() command to do nothing when a normal variable of the given name already exists
 option(RTDB_TEST_ENABLED "Build all tests" ON)
 
 if (RTDB_TEST_ENABLED)
