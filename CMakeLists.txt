@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(RtDB LANGUAGES CXX)
 
-option(RTDB_TESTS_ENABLED "Build all tests" ON)
+option(RTDB_TEST_ENABLED "Build all tests" ON)
 
-if (RTDB_TESTS_ENABLED)
+if (RTDB_TEST_ENABLED)
   enable_testing()
 endif()
 
@@ -22,6 +22,6 @@ add_subdirectory(definitions) # TODO only for making msgpack macros available ->
 add_subdirectory(rtdb2) # NOTE: the 2 postfix was introduced by Cambada next to their legacy rtdb API - maybe best to keep peculiar naming as is?
 add_subdirectory(utils)
 
-if (RTDB_TESTS_ENABLED)
+if (RTDB_TEST_ENABLED)
   add_subdirectory(test)
 endif()
