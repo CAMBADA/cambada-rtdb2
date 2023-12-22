@@ -45,3 +45,6 @@ You should set environment variable RTDB_CONFIG_PATH.
 
 RtDB is licensed under Apache 2.0
 
+## License
+
+RtDB2 is licensed under GNU General Public License v3 (GPL-3)
