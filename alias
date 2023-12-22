@@ -1,0 +1,10 @@
+#!/bin/bash
+
+RTDB_TOOLS_FOLDER=$(dirname "$0")/python
+
+alias rget="python3 $RTDB_TOOLS_FOLDER/rtdb2_get.py $@"
+alias rput="python3 $RTDB_TOOLS_FOLDER/rtdb2_put.py $@"
+alias rdump="python3 $RTDB_TOOLS_FOLDER/rtdb2_dump.py $@"
+alias rmon="python3 $RTDB_TOOLS_FOLDER/rtdb2_mon.py $@"
+alias rtop="python3 $RTDB_TOOLS_FOLDER/rtdb2_top.py /tmp/rtdb2_storage"
+
